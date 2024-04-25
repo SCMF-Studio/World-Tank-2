@@ -10,7 +10,7 @@ public class TankСontrol : MonoBehaviour
     float speed = 2f;
     float turnSpeed = 200f;
     float rotationMuzzle = 5f;
-    public Transform muzzleTransform;
+    private Transform muzzleTransform;
     float armoSpeed = 5f;
     float reloading = 2f;
 
@@ -18,7 +18,7 @@ public class TankСontrol : MonoBehaviour
 
     void Start()
     {
-        
+        muzzleTransform = GameObject.Find("TS-001_muzzle").transform;
     }
 
     
