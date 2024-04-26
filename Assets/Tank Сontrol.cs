@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.Sockets;
 using UnityEngine;
 
 public class TankСontrol : MonoBehaviour
@@ -10,14 +11,19 @@ public class TankСontrol : MonoBehaviour
     float speed = 2f;
     float turnSpeed = 200f;
     float rotationMuzzle = 5f;
-    public Transform muzzleTransform;
+    private Transform muzzleTransform;
     float armoSpeed = 5f;
+    private Transform shootPos;
+    [SerializeField] private GameObject bullet_standart;
+    private bool canShoot = true;
     float reloading = 2f;
 
   
 
     void Start()
     {
+        muzzleTransform = GameObject.Find("TS-001_muzzle").transform;
+        shootPos = GameObject.Find("ShootPos").transform;   
         
     }
 
@@ -26,6 +32,12 @@ public class TankСontrol : MonoBehaviour
     {
         MoveTank();
         RotateTurret();
+
+        // Shooting
+        if (Input.GetMouseButton(0))
+        {
+            StartCoroutine(Shoot());
+        }
     }
 
     void MoveTank()
@@ -68,11 +80,34 @@ public class TankСontrol : MonoBehaviour
     void RotateTurret()
     {
         // Controlling the muzzle tank with the mouse
+
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector3 direction = mousePos - transform.position;
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         muzzleTransform.rotation = Quaternion.Slerp(muzzleTransform.rotation, rotation, rotationMuzzle * Time.deltaTime);
+
+        // Rotation shootPos for mouse and muzzle
+        mousePos.z = 0f; 
+        Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        shootPos.rotation = Quaternion.Slerp(shootPos.rotation, targetRotation, rotationMuzzle * Time.deltaTime);
+
     }
 
+    private IEnumerator Shoot()
+    {
+
+        // Shooting
+        if (canShoot)
+        {
+            canShoot = false;
+            GameObject newRocket = Instantiate(bullet_standart, shootPos.position, muzzleTransform.rotation);
+            Rigidbody2D rocketRb = newRocket.GetComponent<Rigidbody2D>();
+            rocketRb.velocity = muzzleTransform.right * armoSpeed;
+            yield return new WaitForSeconds(reloading);
+            canShoot = true;
+        }
+    }
+
+    
 }
