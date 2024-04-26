@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4214953748202015278}
   - component: {fileID: 5226721150939312843}
   m_Layer: 0
-  m_Name: 9-Sliced
+  m_Name: ShootPos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -267,4 +267,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3775568ad5481c40915ac743068a066, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rocket: {fileID: 0}
+  bullet_standart: {fileID: 0}

@@ -14,7 +14,7 @@ public class TankСontrol : MonoBehaviour
     private Transform muzzleTransform;
     float armoSpeed = 5f;
     private Transform shootPos;
-    [SerializeField] private GameObject rocket;
+    [SerializeField] private GameObject bullet_standart;
     private bool canShoot = true;
     float reloading = 2f;
 
@@ -22,9 +22,8 @@ public class TankСontrol : MonoBehaviour
 
     void Start()
     {
-
         muzzleTransform = GameObject.Find("TS-001_muzzle").transform;
-        shootPos = GameObject.Find("ShootPos").transform;
+        shootPos = GameObject.Find("ShootPos").transform;   
         
     }
 
@@ -102,7 +101,7 @@ public class TankСontrol : MonoBehaviour
         if (canShoot)
         {
             canShoot = false;
-            GameObject newRocket = Instantiate(rocket, shootPos.position, muzzleTransform.rotation);
+            GameObject newRocket = Instantiate(bullet_standart, shootPos.position, muzzleTransform.rotation);
             Rigidbody2D rocketRb = newRocket.GetComponent<Rigidbody2D>();
             rocketRb.velocity = muzzleTransform.right * armoSpeed;
             yield return new WaitForSeconds(reloading);
