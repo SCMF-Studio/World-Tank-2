@@ -18,13 +18,15 @@ public class TankСontrol : MonoBehaviour
     private bool canShoot = true;
     float reloading = 2f;
 
-  
+    private Rigidbody rb;
+
 
     void Start()
     {
         muzzleTransform = GameObject.Find("TS-001_muzzle").transform;
-        shootPos = GameObject.Find("ShootPos").transform;   
-        
+        shootPos = GameObject.Find("ShootPos").transform;
+        rb = GetComponent<Rigidbody>();
+
     }
 
     
@@ -71,11 +73,19 @@ public class TankСontrol : MonoBehaviour
             MoveHorizontalInput = 0f;
         }
 
-        transform.Translate(Vector3.up *MoveVerticalInput * speed * Time.deltaTime); 
-        transform.Rotate(Vector3.forward, MoveHorizontalInput * turnSpeed * Time.deltaTime);
-
+        transform.Translate(Vector3.up * MoveVerticalInput * speed * Time.deltaTime); 
+        transform.Rotate(Vector3.forward, MoveHorizontalInput * turnSpeed * Time.deltaTime);    
        
     }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Border"))
+        {
+            rb.velocity = Vector3.zero;
+            Debug.Log("sad"); Debug.Log("sad");
+        }
+    }
+
 
     void RotateTurret()
     {
