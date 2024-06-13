@@ -1,18 +1,45 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 public class ButtonController : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public GameObject button1, button2, button3, button4; 
+
+
+    public void SinglePlayer()
     {
-        
+        SceneManager.LoadScene("Sample Scene");
+        Debug.Log("Single work");
+
+    }
+    
+    public void MultiPlayer()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Debug.Log("Multiplayer loading...");
+        }
+    }
+    public void Options()
+    {
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            Debug.Log("Open option and use ghost menu");
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    void Quit()
     {
-        
+        if (Input.GetMouseButtonDown(0))
+        {
+            Debug.Log("Exit");
+            Application.Quit();
+        }
     }
+
+
 }
