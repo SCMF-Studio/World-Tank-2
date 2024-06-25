@@ -82,7 +82,6 @@ public class TankСontrol : MonoBehaviour
         if (collision.gameObject.CompareTag("Border"))
         {
             rb.velocity = Vector3.zero;
-            Debug.Log("sad"); Debug.Log("sad");
         }
     }
 
