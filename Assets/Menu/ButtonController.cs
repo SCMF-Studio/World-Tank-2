@@ -1,45 +1,43 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 public class ButtonController : MonoBehaviour
 {
-    public GameObject button1, button2, button3, button4; 
+    public GameObject button1, button2, button3, button4;
+    public GameObject option_menu;
 
 
     public void SinglePlayer()
     {
-        SceneManager.LoadScene("Sample Scene");
-        Debug.Log("Single work");
+        
+        SceneManager.LoadScene("SampleScene");
 
     }
-    
-    public void MultiPlayer()
+     public void MultiPlayer()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Debug.Log("Multiplayer loading...");
-        }
+     
+        Debug.Log("Multiplayer loading...");
+
     }
     public void Options()
     {
 
-        if (Input.GetMouseButtonDown(0))
-        {
-            Debug.Log("Open option and use ghost menu");
-        }
+        option_menu.SetActive(true);
     }
-
-    void Quit()
+    public void ExitOptions()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Debug.Log("Exit");
-            Application.Quit();
-        }
+        option_menu.SetActive(false);
     }
+    public void Quit()
+    {
+        Debug.Log("Exit");
+        Application.Quit();
+    } 
 
 
 }
