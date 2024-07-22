@@ -1,42 +1,36 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Net.Sockets;
 using UnityEngine;
+using System.Collections;
 
-public class TankСontrol : MonoBehaviour
+public class TankControl : MonoBehaviour
 {
-
     float xp = 100f;
     float damage = 10f;
     float speed = 2f;
     float turnSpeed = 200f;
-    float rotationMuzzle = 5f;
     private Transform muzzleTransform;
     float armoSpeed = 5f;
     private Transform shootPos;
     [SerializeField] private GameObject bullet_standart;
     private bool canShoot = true;
     float reloading = 2f;
-
-    private Rigidbody rb;
-
+    private Rigidbody2D rb;
+    private float rotationSpeed = 200f; 
 
     void Start()
     {
         muzzleTransform = GameObject.Find("TS-001_muzzle").transform;
         shootPos = GameObject.Find("ShootPos").transform;
-        rb = GetComponent<Rigidbody>();
-
+        rb = GetComponent<Rigidbody2D>();
     }
 
-    
     void Update()
     {
         MoveTank();
         RotateTurret();
 
         // Shooting
-        if (Input.GetMouseButton(0))
+        
+        if (Input.GetKey(KeyCode.Space))
         {
             StartCoroutine(Shoot());
         }
@@ -47,6 +41,7 @@ public class TankСontrol : MonoBehaviour
         // Controlling the body tank using keys
         float MoveVerticalInput = Input.GetAxis("Vertical");
         float MoveHorizontalInput = Input.GetAxis("Horizontal");
+
         if (Input.GetKey(KeyCode.W))
         {
             MoveVerticalInput = 1f;
@@ -59,7 +54,7 @@ public class TankСontrol : MonoBehaviour
         {
             MoveVerticalInput = 0f;
         }
-        
+
         if (Input.GetKey(KeyCode.D))
         {
             MoveHorizontalInput = -1f;
@@ -73,10 +68,10 @@ public class TankСontrol : MonoBehaviour
             MoveHorizontalInput = 0f;
         }
 
-        transform.Translate(Vector3.up * MoveVerticalInput * speed * Time.deltaTime); 
-        transform.Rotate(Vector3.forward, MoveHorizontalInput * turnSpeed * Time.deltaTime);    
-       
+        transform.Translate(Vector3.up * MoveVerticalInput * speed * Time.deltaTime);
+        transform.Rotate(Vector3.forward, MoveHorizontalInput * turnSpeed * Time.deltaTime);
     }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Border"))
@@ -85,28 +80,24 @@ public class TankСontrol : MonoBehaviour
         }
     }
 
-
     void RotateTurret()
     {
-        // Controlling the muzzle tank with the mouse
+        float rotationInput = 0f;
+        if (Input.GetMouseButton(0))
+        {
+            rotationInput = 1f;
+        }
+        else if (Input.GetMouseButton(1))
+        {
+            rotationInput = -1f;
+        }
 
-        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector3 direction = mousePos - transform.position;
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-        muzzleTransform.rotation = Quaternion.Slerp(muzzleTransform.rotation, rotation, rotationMuzzle * Time.deltaTime);
-
-        // Rotation shootPos for mouse and muzzle
-        mousePos.z = 0f; 
-        Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
-        shootPos.rotation = Quaternion.Slerp(shootPos.rotation, targetRotation, rotationMuzzle * Time.deltaTime);
-
+        // Поворачиваем дуло на основе ввода
+        muzzleTransform.Rotate(Vector3.forward, rotationInput * rotationSpeed * Time.deltaTime);
     }
 
     private IEnumerator Shoot()
     {
-
-        // Shooting
         if (canShoot)
         {
             canShoot = false;
@@ -117,6 +108,4 @@ public class TankСontrol : MonoBehaviour
             canShoot = true;
         }
     }
-
-    
 }

@@ -8605,7 +8605,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66866ca57f9560642b19e9fe175651d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fillAmount: 0
+  fillAmount: 1
   contentHp: {fileID: 788021663}
   reload: {fileID: 806320879}
 --- !u!1001 &4119168606464999117
