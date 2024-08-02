@@ -1,13 +1,8 @@
-using Meryel.UnityCodeAssist.Serilog;
-using Meryel.UnityCodeAssist.Serilog.Core;
+using Serilog;
+using Serilog.Core;
 using UnityEngine;
 using UnityEditor;
 using System.Linq;
-
-
-#pragma warning disable IDE0005
-using Serilog = Meryel.UnityCodeAssist.Serilog;
-#pragma warning restore IDE0005
 
 
 #nullable enable
@@ -16,7 +11,7 @@ using Serilog = Meryel.UnityCodeAssist.Serilog;
 namespace Meryel.UnityCodeAssist.Editor.Logger
 {
 
-    //[InitializeOnLoad]
+    [InitializeOnLoad]
     public static class ELogger
     {
         public static event System.Action? OnVsInternalLogChanged;
@@ -71,12 +66,8 @@ namespace Meryel.UnityCodeAssist.Editor.Logger
 
             if (isFirst)
                 LogHeader(Application.unityVersion, projectPath);
+            Serilog.Log.Debug("PATH: {Path}", projectPath);
         }
-
-        /// <summary>
-        /// Empty method for invoking static class ctor
-        /// </summary>
-        public static void Bump() { }
 
 
         static void LogHeader(string unityVersion, string solutionDir)
@@ -100,7 +91,7 @@ namespace Meryel.UnityCodeAssist.Editor.Logger
         {
             var solutionHash = CommonTools.GetHashOfPath(solutionDir);
             var tempDir = System.IO.Path.GetTempPath();
-            var fileName = $"UnityCodeAssist_U_Log_{solutionHash}_.TXT"; // hour code will be appended to the end of file, so add a trailing '_'
+            var fileName = $"UCA_U_LOG_{solutionHash}_.TXT"; // hour code will be appended to the end of file, so add a trailing '_'
             var filePath = System.IO.Path.Combine(tempDir, fileName);
             return filePath;
         }
@@ -109,11 +100,7 @@ namespace Meryel.UnityCodeAssist.Editor.Logger
         {
             var solutionHash = CommonTools.GetHashOfPath(solutionDir);
             var tempDir = System.IO.Path.GetTempPath();
-#if MERYEL_UCA_LITE_VERSION
-            var fileName = $"UnityCodeAssistLite_VS_Log_{solutionHash}_.TXT"; // hour code will be appended to the end of file, so add a trailing '_'
-#else
-            var fileName = $"UnityCodeAssist_VS_Log_{solutionHash}_.TXT"; // hour code will be appended to the end of file, so add a trailing '_'
-#endif
+            var fileName = $"UCA_VS_LOG_{solutionHash}_.TXT"; // hour code will be appended to the end of file, so add a trailing '_'
             var filePath = System.IO.Path.Combine(tempDir, fileName);
             return filePath;
         }

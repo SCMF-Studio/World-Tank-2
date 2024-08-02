@@ -2,14 +2,9 @@ using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Text;
-using Meryel.UnityCodeAssist.Serilog.Core;
-using Meryel.UnityCodeAssist.Serilog.Events;
-using Meryel.UnityCodeAssist.Serilog.Formatting;
-
-
-#pragma warning disable IDE0005
-using Serilog = Meryel.UnityCodeAssist.Serilog;
-#pragma warning restore IDE0005
+using Serilog.Core;
+using Serilog.Events;
+using Serilog.Formatting;
 
 
 #nullable enable

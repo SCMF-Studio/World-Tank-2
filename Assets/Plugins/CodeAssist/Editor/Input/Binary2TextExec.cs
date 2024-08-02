@@ -7,11 +7,6 @@ using UnityEditor;
 using UnityEngine;
 
 
-#pragma warning disable IDE0005
-using Serilog = Meryel.UnityCodeAssist.Serilog;
-#pragma warning restore IDE0005
-
-
 #nullable enable
 
 
