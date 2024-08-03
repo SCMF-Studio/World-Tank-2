@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Border
   - Bullet
+  - SpawnTank
   layers:
   - Default
   - TransparentFX
