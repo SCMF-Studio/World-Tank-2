@@ -14,21 +14,22 @@ public class TankControl : MonoBehaviour
     private bool canShoot = true;
     float reloading = 2f;
     private Rigidbody2D rb;
-    private float rotationSpeed = 200f; 
-    //esifhiugfseuhfu
+    private float rotationSpeed = 200f;
+    public ParticleSystem particleDownOne, particleDownTwo, particleUpOne, particleUpTwo;
 
     void Start()
     {
         muzzleTransform = GameObject.Find("TS-001_muzzle").transform;
         shootPos = GameObject.Find("ShootPos").transform;
         rb = GetComponent<Rigidbody2D>();
+
     }
 
     void Update()
     {
         MoveTank();
         RotateTurret();
-
+        ParcticleSysteme();
         // Shooting
         
         if (Input.GetKey(KeyCode.Space))
@@ -107,6 +108,45 @@ public class TankControl : MonoBehaviour
             rocketRb.velocity = muzzleTransform.right * armoSpeed;
             yield return new WaitForSeconds(reloading);
             canShoot = true;
+        }
+    }
+
+    void ParcticleSysteme()
+    {
+        if (Input.GetKey(KeyCode.W))
+        {
+            if (!particleDownOne.isEmitting)
+            {
+                particleDownOne.Play();
+                particleDownTwo.Play();
+            }
+        }
+        else
+        {
+            if (!particleDownOne.isEmitting)
+            {
+                particleDownOne.Stop();
+                particleDownTwo.Stop();
+               
+            }
+        }
+
+        if (Input.GetKey(KeyCode.S))
+        {
+            if (!particleUpOne.isEmitting)
+            {
+                particleUpOne.Play();
+                particleUpTwo.Play();
+            }
+        }
+        else
+        {
+            if (!particleUpOne.isEmitting)
+            {
+                particleUpOne.Stop();
+                particleUpTwo.Stop();
+
+            }
         }
     }
 }
