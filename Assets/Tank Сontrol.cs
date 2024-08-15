@@ -30,8 +30,8 @@ public class TankControl : MonoBehaviour
         MoveTank();
         RotateTurret();
         ParcticleSysteme();
+
         // Shooting
-        
         if (Input.GetKey(KeyCode.Space))
         {
             StartCoroutine(Shoot());
