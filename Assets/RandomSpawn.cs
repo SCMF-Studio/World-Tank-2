@@ -6,7 +6,7 @@ using UnityEngine.UIElements;
 
 public class RandomSpawn : MonoBehaviour
 {
-    public GameObject tank;
+    
     public Transform SpawnOne, SpawnTwo, SpawnThree, SpawnFour, SpawnFive, SpawnSix, SpawnSeven;
     private int pos;
 
@@ -19,10 +19,10 @@ public class RandomSpawn : MonoBehaviour
 
     void Start()
     {
-        int value = rnd.Next(1, 6);
+        int value = rnd.Next(1, 8);
         pos = value;
         Debug.Log(value);
-        Possition();
+        
     }
 
     private void Update()
@@ -31,7 +31,7 @@ public class RandomSpawn : MonoBehaviour
     }
 
 
-    private void Possition()
+    public void Possition(GameObject tank)
     {
         switch (pos)
         {

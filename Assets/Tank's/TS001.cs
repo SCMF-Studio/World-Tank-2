@@ -1,20 +1,22 @@
-using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
-public class TankControl : MonoBehaviour
+public class TS001 : MonoBehaviour
 {
     float xp = 100f;
     float damage = 10f;
     float speed = 2f;
+    private float rotationSpeed = 200f;
     float turnSpeed = 200f;
-    private Transform muzzleTransform;
     float armoSpeed = 5f;
+    float reloading = 2f;
+    public float ReloadTime { get { return reloading; } }
+    private Transform muzzleTransform;
     private Transform shootPos;
     [SerializeField] private GameObject bullet_standart;
     private bool canShoot = true;
-    float reloading = 2f;
     private Rigidbody2D rb;
-    private float rotationSpeed = 200f;
     public ParticleSystem particleDownOne, particleDownTwo, particleUpOne, particleUpTwo;
 
     void Start()
@@ -94,7 +96,7 @@ public class TankControl : MonoBehaviour
             rotationInput = -1f;
         }
 
-        // РџРѕРІРѕСЂР°С‡РёРІР°РµРј РґСѓР»Рѕ РЅР° РѕСЃРЅРѕРІРµ РІРІРѕРґР°
+        // Поворачиваем дуло на основе ввода
         muzzleTransform.Rotate(Vector3.forward, rotationInput * rotationSpeed * Time.deltaTime);
     }
 
@@ -127,7 +129,7 @@ public class TankControl : MonoBehaviour
             {
                 particleDownOne.Stop();
                 particleDownTwo.Stop();
-               
+
             }
         }
 

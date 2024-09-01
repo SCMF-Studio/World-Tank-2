@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,9 +7,14 @@ public class HudBar : MonoBehaviour
     [SerializeField] private Image contentHp;
     [SerializeField] private Image reload;
 
-    private float reloadTime = 2f; 
-    private float currentReloadTime = 0f; 
-    private bool isReloading = false; 
+    private float reloadTime = 2f;
+    private float currentReloadTime = 0f;
+    private bool isReloading = false;
+
+    public void SetReloadTime(float newReloadTime)
+    {
+        reloadTime = newReloadTime;
+    }
 
     void Start()
     {
@@ -25,10 +28,6 @@ public class HudBar : MonoBehaviour
         if (isReloading)
         {
             HandleReload();
-        } 
-        if (Input.GetKey(KeyCode.Space))
-        {
-            StartReload();
         }
     }
 
@@ -48,13 +47,13 @@ public class HudBar : MonoBehaviour
         }
     }
 
-    private void StartReload()
+    public void StartReload()
     {
         if (!isReloading)
         {
             isReloading = true;
             currentReloadTime = 0f;
-            reload.fillAmount = 0f; 
+            reload.fillAmount = 0f;
         }
     }
 
@@ -62,7 +61,7 @@ public class HudBar : MonoBehaviour
     {
         isReloading = false;
         currentReloadTime = 0f;
-        reload.fillAmount = 2f; 
+        reload.fillAmount = 1f;
     }
 
     private float Map(float value, float inMin, float inMax, float outMin, float outMax)
