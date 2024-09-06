@@ -1,11 +1,15 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class HudBar : MonoBehaviour
 {
+    // Hud Player
     [SerializeField] private float fillAmount;
     [SerializeField] private Image contentHp;
     [SerializeField] private Image reload;
+
+    [SerializeField] public Image a_password;
 
     private float reloadTime = 2f;
     private float currentReloadTime = 0f;
@@ -68,4 +72,32 @@ public class HudBar : MonoBehaviour
     {
         return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
     }
+
+
+    public void ShowObject()
+    {
+        if (a_password != null)
+        {
+            a_password.enabled = true;
+        }
+    }
+
+    public void HideObject()
+    {
+        if (a_password != null)
+        {
+            a_password.enabled = false;
+        }
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        ShowObject();
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        HideObject();
+    }
+
 }
