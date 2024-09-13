@@ -19,6 +19,9 @@ public class TL001 : MonoBehaviour
     private Rigidbody2D rb;
     public ParticleSystem particleDownOne, particleDownTwo, particleUpOne, particleUpTwo;
 
+    public delegate void ReloadStartedHandler(float reloadTime);
+    public event ReloadStartedHandler OnReloadStarted;
+
     void Start()
     {
         muzzleTransform = GameObject.Find("TL-001_muzzle").transform;
@@ -108,6 +111,8 @@ public class TL001 : MonoBehaviour
             GameObject newRocket = Instantiate(bullet_standart, shootPos.position, muzzleTransform.rotation);
             Rigidbody2D rocketRb = newRocket.GetComponent<Rigidbody2D>();
             rocketRb.velocity = muzzleTransform.up * armoSpeed;
+
+            OnReloadStarted?.Invoke(reloading);
             yield return new WaitForSeconds(reloading);
             canShoot = true;
         }

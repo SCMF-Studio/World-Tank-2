@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using static UnityEditor.Experimental.GraphView.GraphView;
+using System.Runtime.CompilerServices;
 
 public class ManagerGame : MonoBehaviour
 {
@@ -80,16 +81,30 @@ public class ManagerGame : MonoBehaviour
         float reloadTime = GetReloadTime(spawnedTank);
         hudBar.SetReloadTime(reloadTime);
 
-        // Подписываемся на событие начала перезарядки
+        if (spawnedTank.TryGetComponent<TS001>(out TS001 ts001))
+        {
+            ts001.OnReloadStarted += (reloadTime) => hudBar.StartReload();
+        }
+
+        if (spawnedTank.TryGetComponent<TH001>(out TH001 th001))
+        {
+            th001.OnReloadStarted += (reloadTime) => hudBar.StartReload();
+        }
+
         if (spawnedTank.TryGetComponent<TA001>(out TA001 ta001))
         {
             ta001.OnReloadStarted += (reloadTime) => hudBar.StartReload();
+        }
+
+        if (spawnedTank.TryGetComponent<TL001>(out TL001 tl001))
+        {
+            tl001.OnReloadStarted += (reloadTime) => hudBar.StartReload();
         }
     }
 
     private float GetReloadTime(GameObject tank)
     {
-        // Попробуем получить компонент с ReloadTime
+
         if (tank.TryGetComponent<TH001>(out TH001 th001))
         {
             return th001.ReloadTime;
@@ -107,6 +122,11 @@ public class ManagerGame : MonoBehaviour
             return tl001.ReloadTime;
         }
         return 0f;
+    }
+
+    public void HeartPoint(GameObject tank)
+    {
+        Debug.Log("ss");
     }
 
     public void TankStandart0001()

@@ -97,7 +97,6 @@ public class TA001 : MonoBehaviour
 
     void RotateTurret()
     {
-        // Управление вращением дула по мыши
         float rotationInput = 0f;
         if (Input.GetMouseButton(0))
         {
@@ -108,7 +107,6 @@ public class TA001 : MonoBehaviour
             rotationInput = -1f;
         }
 
-        // Вращение дула
         muzzleTransform.Rotate(Vector3.forward, rotationInput * rotationSpeed * Time.deltaTime);
     }
 
@@ -132,10 +130,8 @@ public class TA001 : MonoBehaviour
                 rocketRbTwo.velocity = muzzleTransform.up * armoSpeed;
             }
 
-            // Переключаем ствол
             isFirstBarrel = !isFirstBarrel;
 
-            // Если оба ствола отстрелялись, начинается перезарядка
             if (isFirstBarrel)
             {
                 OnReloadStarted?.Invoke(reloading);
@@ -148,7 +144,6 @@ public class TA001 : MonoBehaviour
 
     void ParcticleSysteme()
     {
-        // Управление частицами при движении вперёд
         if (Input.GetKey(KeyCode.W))
         {
             if (!particleDownOne.isEmitting)
@@ -166,7 +161,6 @@ public class TA001 : MonoBehaviour
             }
         }
 
-        // Управление частицами при движении назад
         if (Input.GetKey(KeyCode.S))
         {
             if (!particleUpOne.isEmitting)
