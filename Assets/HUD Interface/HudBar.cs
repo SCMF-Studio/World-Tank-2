@@ -1,15 +1,17 @@
-using UnityEngine;
+п»їusing UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.Collections;
+using System.IO;
 
 public class HudBar : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] private float fillAmount;
-    [SerializeField] private Image contentHp;
-    [SerializeField] private Image reload;
+    [SerializeField] private float fillHP;
+    [SerializeField] public Image contentHp;
+    [SerializeField] public Image reload;
     public InputField a_password;
-    public RectTransform a_list;  
+    public RectTransform a_list;
 
     private float reloadTime = 2f;
     private float currentReloadTime = 0f;
@@ -17,14 +19,9 @@ public class HudBar : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     private float animationDuration = 1f; 
 
-    public void SetReloadTime(float newReloadTime)
-    {
-        reloadTime = newReloadTime;
-    }
 
     void Start()
     {
-        HandleBar();
         HideObject();
 
         if (a_password != null)
@@ -42,18 +39,19 @@ public class HudBar : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     void Update()
     {
-        HandleBar();
-
         if (isReloading)
         {
             HandleReload();
         }
     }
 
-    private void HandleBar()
+
+
+    public void UpdateHPBar(float currentHP, float maxHP)
     {
-        contentHp.fillAmount = Map(100, 0, 100, 0, 1);
+        contentHp.fillAmount = Mathf.Clamp01(currentHP / maxHP);  
     }
+
 
     private void HandleReload()
     {
@@ -64,6 +62,13 @@ public class HudBar : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             FinishReload();
         }
+    }
+
+    public void SetReloadTime(float newReloadTime)
+    {
+        reloadTime = newReloadTime;
+
+        StartReload();
     }
 
     public void StartReload()
@@ -151,17 +156,15 @@ public class HudBar : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         if (input == "ad1")
         {
-            Debug.Log("Админ-режим активирован!");
             StartCoroutine(AnimateScrollDown()); 
         }
         else if (input == "ad0")
         {
-            Debug.Log("Админ-режим деактивирован!");
             StartCoroutine(AnimateScrollUp());  
         }
         else
         {
-            Debug.Log("Введена неверная команда.");
+            Debug.Log("РђРґРјРёРЅ РєРѕРЅСЃРѕР»СЊ РІС‹РґР°РµС‚ РѕС€РёР±РєСѓ");
         }
 
         a_password.text = "";

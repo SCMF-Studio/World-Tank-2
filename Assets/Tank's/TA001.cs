@@ -1,34 +1,35 @@
-using System.Collections;
+п»їusing System.Collections;
 using UnityEngine;
 
 public class TA001 : MonoBehaviour
 {
-    float xp = 70f; // Жизни
-    float damage = 10f; // Урон
-    float speed = 1.5f; // Скорость танка
-    float turnSpeed = 130f; // Скорость вращение танка по оси
-    private float rotationSpeed = 130f; // Скорость вращение дула
-    float armoSpeed = 6f; // Скорость патрона
-    float reloading = 2f; // Перезарядка
+    public float hp = 70f;
+    public float maxHP = 70f;
+    public float currentHP;
+    public float damage = 10f;
+    public float speed = 1.5f;
+    public float rotationSpeed = 130f;
+    public float turnSpeed = 130f;
+    public float armoSpeed = 6f;
+    public float reloading = 2f;
     public float ReloadTime { get { return reloading; } }
 
-    private Transform muzzleTransform; // Трансформ дула (мушка)
-    private Transform shootPosOne, shootPosTwo; // Позиции для стрельбы
-    [SerializeField] private GameObject bullet_standart; // Префаб снаряда
+    private Transform muzzleTransform; 
+    private Transform shootPosOne, shootPosTwo; 
+    [SerializeField] private GameObject bullet_standart; 
 
-    private bool canShoot = true; // Флаг для проверки возможности стрельбы
-    private bool isFirstBarrel = true; // Флаг для отслеживания текущего ствола
+    private bool canShoot = true; 
+    private bool isFirstBarrel = true; 
 
-    private Rigidbody2D rb; // Rigidbody танка для физики
+    private Rigidbody2D rb; 
 
-    public ParticleSystem particleDownOne, particleDownTwo, particleUpOne, particleUpTwo; // Частицы для движения
-
+    public ParticleSystem particleDownOne, particleDownTwo, particleUpOne, particleUpTwo; 
     public delegate void ReloadStartedHandler(float reloadTime);
     public event ReloadStartedHandler OnReloadStarted;
 
     void Start()
     {
-        // Инициализация трансформов и Rigidbody
+        currentHP = maxHP;
         muzzleTransform = GameObject.Find("TA-001_muzzle").transform;
         shootPosOne = GameObject.Find("ShootPosOne").transform;
         shootPosTwo = GameObject.Find("ShootPosTwo").transform;
@@ -37,12 +38,10 @@ public class TA001 : MonoBehaviour
 
     void Update()
     {
-        // Обработка движения танка и вращения дула
         MoveTank();
         RotateTurret();
         ParcticleSysteme();
 
-        // Обработка стрельбы
         if (Input.GetKeyDown(KeyCode.Space) && canShoot)
         {
             StartCoroutine(Shoot());
@@ -51,7 +50,7 @@ public class TA001 : MonoBehaviour
 
     void MoveTank()
     {
-        // Управление движением танка по вертикали и горизонтали
+
         float MoveVerticalInput = Input.GetAxis("Vertical");
         float MoveHorizontalInput = Input.GetAxis("Horizontal");
 
@@ -81,17 +80,62 @@ public class TA001 : MonoBehaviour
             MoveHorizontalInput = 0f;
         }
 
-        // Движение и вращение танка
         transform.Translate(Vector3.up * MoveVerticalInput * speed * Time.deltaTime);
         transform.Rotate(Vector3.forward, MoveHorizontalInput * turnSpeed * Time.deltaTime);
     }
 
+    public void TakeDamage(float damage)
+    {
+        currentHP -= damage;
+        if (currentHP <= 0)
+        {
+            Die();
+        }
+        UpdateHUD();
+    }
+
+    private void Die()
+    {
+        Debug.Log("РўР°РЅРє СѓРЅРёС‡С‚РѕР¶РµРЅ!");
+        Destroy(gameObject);
+    }
+
+    private void UpdateHUD()
+    {
+        if (FindObjectOfType<HudBar>() != null)
+        {
+            HudBar hudBar = FindObjectOfType<HudBar>();
+            hudBar.UpdateHPBar(currentHP, maxHP);
+        }
+    }
+
+    public void SetMaxHP(float newMaxHP)
+    {
+        maxHP = newMaxHP;
+
+        if (currentHP > maxHP)
+        {
+            currentHP = maxHP;
+        }
+        UpdateHUD();
+    }
+
+    public void SetCurrentHP(float newCurrentHP)
+    {
+        currentHP = Mathf.Clamp(newCurrentHP, 0, maxHP);
+
+        UpdateHUD();
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        // Обработка столкновений
         if (collision.gameObject.CompareTag("Border"))
         {
             rb.velocity = Vector3.zero;
+        }
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            TakeDamage(10f);
         }
     }
 
@@ -116,7 +160,6 @@ public class TA001 : MonoBehaviour
         {
             canShoot = false;
 
-            // Стреляем из соответствующей позиции
             if (isFirstBarrel)
             {
                 GameObject newRocketOne = Instantiate(bullet_standart, shootPosOne.position, muzzleTransform.rotation);

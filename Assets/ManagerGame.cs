@@ -128,7 +128,6 @@ public class ManagerGame : MonoBehaviour
     {
         Debug.Log("ss");
     }
-
     public void TankStandart0001()
     {
         SelectTank("Your choice: TS-0001", tank_ts0001);
@@ -147,6 +146,11 @@ public class ManagerGame : MonoBehaviour
     public void TankLittle0001()
     {
         SelectTank("Your choice: TL-0001", tank_tl0001);
+    }
+
+    public GameObject GetSpawnedTank()
+    {
+        return spawnedTank;
     }
 
     public void Possition(GameObject tankPos)

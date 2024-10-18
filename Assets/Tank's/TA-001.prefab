@@ -14925,6 +14925,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50276315481fa0a459710b459fd8eb6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hp: 70
+  maxHP: 70
+  currentHP: 0
+  damage: 10
+  speed: 1.5
+  rotationSpeed: 130
+  turnSpeed: 130
+  armoSpeed: 6
+  reloading: 2
   bullet_standart: {fileID: 6964707964533408667, guid: 6d400819fbc5d2f47be3fe1bfb61c0e9, type: 3}
   particleDownOne: {fileID: 7564839329719612934}
   particleDownTwo: {fileID: 6243559895452909835}
