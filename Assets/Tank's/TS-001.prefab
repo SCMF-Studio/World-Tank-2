@@ -19518,7 +19518,7 @@ Transform:
   m_GameObject: {fileID: 8371053961941345875}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 6.63, y: -1.69, z: 0}
+  m_LocalPosition: {x: 25.19, y: -3.98, z: -0.071609065}
   m_LocalScale: {x: 0.07328904, y: 0.07328904, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -19593,6 +19593,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ec07991498c91f4cb3d9db8f5a1ce84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hp: 100
+  maxHP: 100
+  currentHP: 0
+  damage: 10
+  speed: 2
+  rotationSpeed: 200
+  turnSpeed: 200
+  armoSpeed: 5
+  reloading: 2
   bullet_standart: {fileID: 6964707964533408667, guid: 6d400819fbc5d2f47be3fe1bfb61c0e9, type: 3}
   particleDownOne: {fileID: 5356371093714517587}
   particleDownTwo: {fileID: 8349686104963052921}

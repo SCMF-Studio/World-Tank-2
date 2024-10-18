@@ -1,16 +1,18 @@
-using System.Collections;
+п»їusing System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class TH001 : MonoBehaviour
 {
-    float xp = 150f; // Жизни
-    float damage = 30f; // Урон
-    float speed = 1f; // Скорость танка
-    float turnSpeed = 80f; // Скорость вращение танка по оси
-    private float rotationSpeed = 100f; // Скорость вращение дула
-    float armoSpeed = 7f; // Скорость патрона
-    float reloading = 4f; // Перезарядка
+    public float hp = 150f;
+    public float maxHP = 150f;
+    public float currentHP;
+    public float damage = 30f;
+    public float speed = 1f;
+    public float rotationSpeed = 100f;
+    public float turnSpeed = 80f;
+    public float armoSpeed = 7f;
+    public float reloading = 4f;
     public float ReloadTime { get { return reloading; } }
     private Transform muzzleTransform;
     private Transform shootPos;
@@ -19,12 +21,17 @@ public class TH001 : MonoBehaviour
     private Rigidbody2D rb;
     public ParticleSystem particleDownOne, particleDownTwo, particleUpOne, particleUpTwo, pacticleSmokeOne, pacticleSmokeTwo;
 
+    public delegate void ReloadStartedHandler(float reloadTime);
+    public event ReloadStartedHandler OnReloadStarted;
+
     void Start()
     {
+        currentHP = maxHP;
         muzzleTransform = GameObject.Find("TH-001_muzzle").transform;
         shootPos = GameObject.Find("ShootPos").transform;
         rb = GetComponent<Rigidbody2D>();
         pacticleSmokeOne.Play(); pacticleSmokeTwo.Play();
+        Debug.Log($"РўР°РЅРє {name}: HP = {currentHP}, Damage = {damage}, Speed = {speed}");
 
     }
 
@@ -40,7 +47,14 @@ public class TH001 : MonoBehaviour
             StartCoroutine(Shoot());
         }
     }
-
+    public void UpdateTankStats(float newHP, float newDamage, float newSpeed)
+{
+    maxHP = newHP;
+    currentHP = maxHP; // РР»Рё С‚РµРєСѓС‰РёРµ Р·РЅР°С‡РµРЅРёСЏ, РµСЃР»Рё СЌС‚Рѕ РЅРµРѕР±С…РѕРґРёРјРѕ
+    damage = newDamage;
+    speed = newSpeed;
+    Debug.Log($"РўР°РЅРє {name}: HP = {currentHP}, Damage = {damage}, Speed = {speed}");
+}
     void MoveTank()
     {
         // Controlling the body tank using keys
@@ -77,11 +91,58 @@ public class TH001 : MonoBehaviour
         transform.Rotate(Vector3.forward, MoveHorizontalInput * turnSpeed * Time.deltaTime);
     }
 
+    public void TakeDamage(float damage)
+    {
+        currentHP -= damage;
+        if (currentHP <= 0)
+        {
+            Die();
+        }
+        UpdateHUD();
+    }
+
+    private void Die()
+    {
+        Debug.Log("РўР°РЅРє СѓРЅРёС‡С‚РѕР¶РµРЅ!");
+        Destroy(gameObject);
+    }
+
+    private void UpdateHUD()
+    {
+        if (FindObjectOfType<HudBar>() != null)
+        {
+            HudBar hudBar = FindObjectOfType<HudBar>();
+            hudBar.UpdateHPBar(currentHP, maxHP);
+        }
+    }
+
+    public void SetMaxHP(float newMaxHP)
+    {
+        maxHP = newMaxHP;
+
+        if (currentHP > maxHP)
+        {
+            currentHP = maxHP;
+        }
+        UpdateHUD();
+    }
+
+    public void SetCurrentHP(float newCurrentHP)
+    {
+        currentHP = Mathf.Clamp(newCurrentHP, 0, maxHP);
+
+        UpdateHUD();
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Border"))
         {
             rb.velocity = Vector3.zero;
+        }
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            TakeDamage(10f);
         }
     }
 
@@ -97,7 +158,6 @@ public class TH001 : MonoBehaviour
             rotationInput = -1f;
         }
 
-        // Поворачиваем дуло на основе ввода
         muzzleTransform.Rotate(Vector3.forward, rotationInput * rotationSpeed * Time.deltaTime);
     }
 
@@ -109,6 +169,8 @@ public class TH001 : MonoBehaviour
             GameObject newRocket = Instantiate(bullet_standart, shootPos.position, muzzleTransform.rotation);
             Rigidbody2D rocketRb = newRocket.GetComponent<Rigidbody2D>();
             rocketRb.velocity = muzzleTransform.up * armoSpeed;
+
+            OnReloadStarted?.Invoke(reloading);
             yield return new WaitForSeconds(reloading);
             canShoot = true;
         }

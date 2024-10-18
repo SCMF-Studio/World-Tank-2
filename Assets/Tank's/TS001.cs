@@ -1,16 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
+Ôªøusing System.Collections;
 using UnityEngine;
 
 public class TS001 : MonoBehaviour
 {
-    float xp = 100f;
-    float damage = 10f;
-    float speed = 2f;
-    private float rotationSpeed = 200f;
-    float turnSpeed = 200f;
-    float armoSpeed = 5f;
-    float reloading = 2f;
+    public float hp = 100f; 
+    public float maxHP = 100f; 
+    public float currentHP;
+    public float damage = 10f;
+    public float speed = 2f;
+    public float rotationSpeed = 200f;
+    public float turnSpeed = 200f;
+    public float armoSpeed = 5f;
+    public float reloading = 2f;
     public float ReloadTime { get { return reloading; } }
     private Transform muzzleTransform;
     private Transform shootPos;
@@ -19,11 +20,16 @@ public class TS001 : MonoBehaviour
     private Rigidbody2D rb;
     public ParticleSystem particleDownOne, particleDownTwo, particleUpOne, particleUpTwo;
 
+    public delegate void ReloadStartedHandler(float reloadTime);
+    public event ReloadStartedHandler OnReloadStarted;
+
     void Start()
     {
         muzzleTransform = GameObject.Find("TS-001_muzzle").transform;
         shootPos = GameObject.Find("ShootPos").transform;
         rb = GetComponent<Rigidbody2D>();
+
+        currentHP = maxHP;
 
     }
 
@@ -32,17 +38,23 @@ public class TS001 : MonoBehaviour
         MoveTank();
         RotateTurret();
         ParcticleSysteme();
-
-        // Shooting
+        // –°—Ç—Ä–µ–ª—å–±–∞
         if (Input.GetKey(KeyCode.Space))
         {
             StartCoroutine(Shoot());
         }
     }
+    public void UpdateTankStats(float newHP, float newDamage, float newSpeed)
+    {
+        maxHP = newHP;
+        currentHP = maxHP; 
+        damage = newDamage;
+        speed = newSpeed;
+        Debug.Log($"–¢–∞–Ω–∫ {name}: HP = {currentHP}, Damage = {damage}, Speed = {speed}");
+    }
 
     void MoveTank()
     {
-        // Controlling the body tank using keys
         float MoveVerticalInput = Input.GetAxis("Vertical");
         float MoveHorizontalInput = Input.GetAxis("Horizontal");
 
@@ -76,11 +88,58 @@ public class TS001 : MonoBehaviour
         transform.Rotate(Vector3.forward, MoveHorizontalInput * turnSpeed * Time.deltaTime);
     }
 
+    public void TakeDamage(float damage)
+    {
+        currentHP -= damage; 
+        if (currentHP <= 0)
+        {
+            Die(); 
+        }
+        UpdateHUD(); 
+    }
+
+    private void Die()
+    {
+        Debug.Log("–¢–∞–Ω–∫ —É–Ω–∏—á—Ç–æ–∂–µ–Ω!");
+        Destroy(gameObject); 
+    }
+
+    private void UpdateHUD()
+    {
+        if (FindObjectOfType<HudBar>() != null)
+        {
+            HudBar hudBar = FindObjectOfType<HudBar>();
+            hudBar.UpdateHPBar(currentHP, maxHP);
+        }
+    }
+
+    public void SetMaxHP(float newMaxHP)
+    {
+        maxHP = newMaxHP;
+
+        if (currentHP > maxHP)
+        {
+            currentHP = maxHP;
+        }
+        UpdateHUD();
+    }
+
+    public void SetCurrentHP(float newCurrentHP)
+    {
+        currentHP = Mathf.Clamp(newCurrentHP, 0, maxHP);  
+
+        UpdateHUD();
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Border"))
         {
             rb.velocity = Vector3.zero;
+        }
+        if (collision.gameObject.CompareTag("Enemy")) 
+        {
+            TakeDamage(10f); 
         }
     }
 
@@ -96,7 +155,6 @@ public class TS001 : MonoBehaviour
             rotationInput = -1f;
         }
 
-        // œÓ‚Ó‡˜Ë‚‡ÂÏ ‰ÛÎÓ Ì‡ ÓÒÌÓ‚Â ‚‚Ó‰‡
         muzzleTransform.Rotate(Vector3.forward, rotationInput * rotationSpeed * Time.deltaTime);
     }
 
@@ -108,6 +166,8 @@ public class TS001 : MonoBehaviour
             GameObject newRocket = Instantiate(bullet_standart, shootPos.position, muzzleTransform.rotation);
             Rigidbody2D rocketRb = newRocket.GetComponent<Rigidbody2D>();
             rocketRb.velocity = muzzleTransform.right * armoSpeed;
+
+            OnReloadStarted?.Invoke(reloading);
             yield return new WaitForSeconds(reloading);
             canShoot = true;
         }
@@ -129,7 +189,6 @@ public class TS001 : MonoBehaviour
             {
                 particleDownOne.Stop();
                 particleDownTwo.Stop();
-
             }
         }
 
@@ -147,7 +206,6 @@ public class TS001 : MonoBehaviour
             {
                 particleUpOne.Stop();
                 particleUpTwo.Stop();
-
             }
         }
     }

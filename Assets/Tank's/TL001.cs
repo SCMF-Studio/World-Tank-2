@@ -1,16 +1,18 @@
-using System.Collections;
+п»їusing System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class TL001 : MonoBehaviour
 {
-    float xp = 50f; // Жизни
-    float damage = 5f; // Урон
-    float speed = 2.5f; // Скорость танка
-    float turnSpeed = 100f; // Скорость вращение танка по оси
-    private float rotationSpeed = 200f; // Скорость вращение дула
-    float armoSpeed = 10f; // Скорость патрона
-    float reloading = 0.5f; // Перезарядка
+    public float hp = 50f;
+    public float maxHP = 50f;
+    public float currentHP;
+    public float damage = 5f;
+    public float speed = 2.5f;
+    public float rotationSpeed = 200f;
+    public float turnSpeed = 100f;
+    public float armoSpeed = 10f;
+    public float reloading = 0.5f;
     public float ReloadTime { get { return reloading; } }
     private Transform muzzleTransform;
     private Transform shootPos;
@@ -19,8 +21,12 @@ public class TL001 : MonoBehaviour
     private Rigidbody2D rb;
     public ParticleSystem particleDownOne, particleDownTwo, particleUpOne, particleUpTwo;
 
+    public delegate void ReloadStartedHandler(float reloadTime);
+    public event ReloadStartedHandler OnReloadStarted;
+
     void Start()
     {
+        currentHP = maxHP;
         muzzleTransform = GameObject.Find("TL-001_muzzle").transform;
         shootPos = GameObject.Find("ShootPos").transform;
         rb = GetComponent<Rigidbody2D>();
@@ -76,11 +82,58 @@ public class TL001 : MonoBehaviour
         transform.Rotate(Vector3.forward, MoveHorizontalInput * turnSpeed * Time.deltaTime);
     }
 
+    public void TakeDamage(float damage)
+    {
+        currentHP -= damage;
+        if (currentHP <= 0)
+        {
+            Die();
+        }
+        UpdateHUD();
+    }
+
+    private void Die()
+    {
+        Debug.Log("РўР°РЅРє СѓРЅРёС‡С‚РѕР¶РµРЅ!");
+        Destroy(gameObject);
+    }
+
+    private void UpdateHUD()
+    {
+        if (FindObjectOfType<HudBar>() != null)
+        {
+            HudBar hudBar = FindObjectOfType<HudBar>();
+            hudBar.UpdateHPBar(currentHP, maxHP);
+        }
+    }
+
+    public void SetMaxHP(float newMaxHP)
+    {
+        maxHP = newMaxHP;
+
+        if (currentHP > maxHP)
+        {
+            currentHP = maxHP;
+        }
+        UpdateHUD();
+    }
+
+    public void SetCurrentHP(float newCurrentHP)
+    {
+        currentHP = Mathf.Clamp(newCurrentHP, 0, maxHP);
+
+        UpdateHUD();
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Border"))
         {
             rb.velocity = Vector3.zero;
+        }
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            TakeDamage(10f);
         }
     }
 
@@ -96,7 +149,7 @@ public class TL001 : MonoBehaviour
             rotationInput = -1f;
         }
 
-        // Поворачиваем дуло на основе ввода
+        // ГЏГ®ГўГ®Г°Г Г·ГЁГўГ ГҐГ¬ Г¤ГіГ«Г® Г­Г  Г®Г±Г­Г®ГўГҐ ГўГўГ®Г¤Г 
         muzzleTransform.Rotate(Vector3.forward, rotationInput * rotationSpeed * Time.deltaTime);
     }
 
@@ -108,6 +161,8 @@ public class TL001 : MonoBehaviour
             GameObject newRocket = Instantiate(bullet_standart, shootPos.position, muzzleTransform.rotation);
             Rigidbody2D rocketRb = newRocket.GetComponent<Rigidbody2D>();
             rocketRb.velocity = muzzleTransform.up * armoSpeed;
+
+            OnReloadStarted?.Invoke(reloading);
             yield return new WaitForSeconds(reloading);
             canShoot = true;
         }

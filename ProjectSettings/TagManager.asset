@@ -7,6 +7,7 @@ TagManager:
   - Border
   - Bullet
   - SpawnTank
+  - Enemy
   layers:
   - Default
   - TransparentFX
