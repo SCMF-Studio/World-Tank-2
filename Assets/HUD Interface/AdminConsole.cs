@@ -14,6 +14,7 @@ public class AdminConsole : MonoBehaviour
     private GameObject player;
     private ManagerGame managerGame;
     private HudBar hudBar;
+    private BoxScript boxScript;
 
     public TMP_InputField inputReload, inputSpeed, inputSpeed_rotation, inputSpeed_turn, inputHp, inputMaxHp, inputDamage, inputSpeedArmo;
     private float input_rl, input_sp, input_sp_rt, input_sp_turn, input_hp, input_max_hp, input_dm, input_spd_armo;
@@ -35,6 +36,7 @@ public class AdminConsole : MonoBehaviour
 
         managerGame = FindObjectOfType<ManagerGame>();
         hudBar = FindObjectOfType<HudBar>();
+        boxScript = FindObjectOfType<BoxScript>();
 
         a_cs.SetActive(false);
         a_rs.SetActive(false);
@@ -89,6 +91,13 @@ public class AdminConsole : MonoBehaviour
         }
     }
 
+    public void SpawnedBox()
+    {
+        for (int i = 0; i < 50; i++)
+        {
+            boxScript.SpawnBox();
+        }
+    }
 
     // Reload Setting
     public void OnReloadChange(string inputText)
