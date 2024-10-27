@@ -9,20 +9,20 @@ using TMPro;
 public class AdminConsole : MonoBehaviour
 {
     public Button killPlayer1, killPlayer2, cntrlHP, cntrlReload, cntrlSpeed, 
-        restart, respawnPlayer, spawnPoint, spawnBox, effectBox, cntrlDamage, ghost;
+        restart, respawnPlayer, spawnPoint, spawnBox, effectBox, cntrlDamage, ghost, time;
 
     private GameObject player;
     private ManagerGame managerGame;
     private HudBar hudBar;
     private BoxScript boxScript;
 
-    public TMP_InputField inputReload, inputSpeed, inputSpeed_rotation, inputSpeed_turn, inputHp, inputMaxHp, inputDamage, inputSpeedArmo;
-    private float input_rl, input_sp, input_sp_rt, input_sp_turn, input_hp, input_max_hp, input_dm, input_spd_armo;
+    public TMP_InputField inputReload, inputSpeed, inputSpeed_rotation, inputSpeed_turn, inputHp, inputMaxHp, inputDamage, inputSpeedArmo, inputTime;
+    private float input_rl, input_sp, input_sp_rt, input_sp_turn, input_hp, input_max_hp, input_dm, input_spd_armo, input_time;
 
     public Button[] bt_sp;
     public Transform[] spawnPos;
-    public GameObject a_cs, a_rs, a_ss, a_hps, a_ds;
-    public Button a_cs_exit, a_rs_exit, a_ss_exit, a_hps_exit, a_ds_exit;
+    public GameObject a_cs, a_rs, a_ss, a_hps, a_ds, a_t;
+    public Button a_cs_exit, a_rs_exit, a_ss_exit, a_hps_exit, a_ds_exit, a_t_exit;
 
 
     void Start()
@@ -43,6 +43,7 @@ public class AdminConsole : MonoBehaviour
         a_ss.SetActive(false);
         a_hps.SetActive(false);
         a_ds.SetActive(false);
+        a_t.SetActive(false);
 
         if (managerGame != null)
         {
@@ -89,15 +90,14 @@ public class AdminConsole : MonoBehaviour
         {
             inputSpeedArmo.onEndEdit.AddListener(OnSpeedArmoChange);
         }
+
+        if (inputTime != null)
+        {
+            inputTime.onEndEdit.AddListener(OnTimeGame);
+        }
+
     }
 
-    public void SpawnedBox()
-    {
-        for (int i = 0; i < 50; i++)
-        {
-            boxScript.SpawnBox();
-        }
-    }
 
     // Reload Setting
     public void OnReloadChange(string inputText)
@@ -359,6 +359,16 @@ public class AdminConsole : MonoBehaviour
         a_cs.SetActive(false);
     }
 
+    // Time Setting
+
+    public void OnTimeGame(string inputText)
+    {
+        if (float.TryParse(inputText, out input_time))
+        {
+            hudBar.remainingTime = input_time;
+        }
+    }
+
 
     // Reload Setting
     public void ReloadShow()
@@ -402,5 +412,15 @@ public class AdminConsole : MonoBehaviour
     public void DamageHide()
     {
         a_ds.SetActive(false);
+    }
+
+    public void TimeShow()
+    {
+        a_t.SetActive(true);
+    }
+
+    public void TimeHide()
+    {
+        a_t.SetActive(false);
     }
 }

@@ -1,9 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 public class BoxScript : MonoBehaviour
 {
-    public GameObject boxPrefab;
+    public GameObject greenZone, yellowZone, redZone;
+    public GameObject[] greenBox;
+    public GameObject[] yellowBox;
+    public GameObject[] redBox;
+
+    public int numBoxGreen, numBoxYellow, numBoxRed;
+    System.Random rnd = new System.Random();
 
     private List<BoxCollider2D> spawnZoneColliders;
 
@@ -11,22 +18,25 @@ public class BoxScript : MonoBehaviour
     {
         spawnZoneColliders = new List<BoxCollider2D>(GetComponentsInChildren<BoxCollider2D>());
 
-        SpawnBox();
+        SpawnBoxInZone(greenZone, greenBox);
+        SpawnBoxInZone(yellowZone, yellowBox);
+        SpawnBoxInZone(redZone, redBox);
     }
 
-    public void SpawnBox()
+    private void SpawnBoxInZone(GameObject zone, GameObject[] boxArray)
     {
-        BoxCollider2D selectedZone = spawnZoneColliders[Random.Range(0, spawnZoneColliders.Count)];
+        BoxCollider2D zoneCollider = zone.GetComponent<BoxCollider2D>();
 
-        Vector2 center = selectedZone.bounds.center;
-        Vector2 size = selectedZone.bounds.size;
+        int boxIndex = rnd.Next(0, boxArray.Length);
+
+        Vector2 center = zoneCollider.bounds.center;
+        Vector2 size = zoneCollider.bounds.size;
 
         float randomX = Random.Range(center.x - size.x / 2, center.x + size.x / 2);
         float randomY = Random.Range(center.y - size.y / 2, center.y + size.y / 2);
         Vector2 spawnPosition = new Vector2(randomX, randomY);
 
-
-        Instantiate(boxPrefab, spawnPosition, Quaternion.identity);
+        Instantiate(boxArray[boxIndex], spawnPosition, Quaternion.identity);
     }
 }
 

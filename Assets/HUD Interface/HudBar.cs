@@ -3,6 +3,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.Collections;
 using System.IO;
+using TMPro;
 
 public class HudBar : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
@@ -17,7 +18,11 @@ public class HudBar : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private float currentReloadTime = 0f;
     private bool isReloading = false;
 
-    private float animationDuration = 1f; 
+    private float animationDuration = 1f;
+
+    public TextMeshProUGUI time_game;
+    // 300f - 5 минут
+    public float remainingTime = 300f;
 
 
     void Start()
@@ -35,6 +40,9 @@ public class HudBar : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             a_list.localScale = new Vector3(1, 0, 1); 
             a_list.gameObject.SetActive(false);  
         }
+
+        UpdateTimeText();
+        StartCoroutine(TimerCountdown());
     }
 
     void Update()
@@ -151,6 +159,31 @@ public class HudBar : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         a_list.localScale = new Vector3(1, 0, 1);  
         a_list.gameObject.SetActive(false);  
     }
+
+    public IEnumerator TimerCountdown()
+    {
+        while (remainingTime > 0)
+        {
+            yield return new WaitForSeconds(1f);
+            remainingTime--;
+
+            UpdateTimeText();
+
+            if (remainingTime <= 0)
+            {
+                Debug.Log("Время вышло!");
+                break;
+            }
+        }
+    }
+
+    public void UpdateTimeText()
+    {
+        int minutes = Mathf.FloorToInt(remainingTime / 60);
+        int seconds = Mathf.FloorToInt(remainingTime % 60);
+        time_game.text = $"{minutes:D2}:{seconds:D2}";
+    }
+
 
     private void CheckPassword(string input)
     {
