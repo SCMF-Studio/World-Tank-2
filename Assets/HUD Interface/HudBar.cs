@@ -23,6 +23,8 @@ public class HudBar : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public TextMeshProUGUI time_game;
     // 300f - 5 минут
     public float remainingTime = 300f;
+    private BoxScript boxScript;
+
 
 
     void Start()
@@ -41,6 +43,7 @@ public class HudBar : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             a_list.gameObject.SetActive(false);  
         }
 
+        boxScript = FindObjectOfType<BoxScript>();
         UpdateTimeText();
         StartCoroutine(TimerCountdown());
     }
@@ -160,6 +163,7 @@ public class HudBar : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         a_list.gameObject.SetActive(false);  
     }
 
+    // Time Game and Spawn Box
     public IEnumerator TimerCountdown()
     {
         while (remainingTime > 0)
@@ -168,6 +172,31 @@ public class HudBar : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             remainingTime--;
 
             UpdateTimeText();
+
+            
+            if (Mathf.Approximately(remainingTime, 298f))  // 300 - 30 = 270
+            {
+                if (boxScript != null)
+                {
+                    boxScript.SpawnMultipleGreenBoxes(2);  
+                }
+            }
+
+            if (Mathf.Approximately(remainingTime, 296f)) 
+            {
+                if (boxScript != null)
+                {
+                    boxScript.SpawnMultipleYellowBoxes(2);
+                }
+            }
+
+            if (Mathf.Approximately(remainingTime, 294f))  
+            {
+                if (boxScript != null)
+                {
+                    boxScript.SpawnMultipleRedBoxes(2);
+                }
+            }
 
             if (remainingTime <= 0)
             {
