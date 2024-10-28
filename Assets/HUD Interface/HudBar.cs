@@ -4,6 +4,8 @@ using UnityEngine.UI;
 using System.Collections;
 using System.IO;
 using TMPro;
+using static UnityEditor.PlayerSettings;
+using System.Text.RegularExpressions;
 
 public class HudBar : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
@@ -24,6 +26,11 @@ public class HudBar : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     // 300f - 5 минут
     public float remainingTime = 300f;
     private BoxScript boxScript;
+
+    private int greenNumBox;
+    private float timeFallBox;
+    System.Random rnd = new System.Random();
+    
 
 
 
@@ -166,6 +173,8 @@ public class HudBar : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     // Time Game and Spawn Box
     public IEnumerator TimerCountdown()
     {
+        int spawnStage = 1;
+
         while (remainingTime > 0)
         {
             yield return new WaitForSeconds(1f);
@@ -173,16 +182,64 @@ public class HudBar : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
             UpdateTimeText();
 
-            
-            if (Mathf.Approximately(remainingTime, 298f))  // 300 - 30 = 270
+            if (remainingTime == 298 && spawnStage == 1)
+            {
+                timeFallBox = rnd.Next(290, 298);
+                Debug.Log("Время прибытия бокса 1: " + timeFallBox);
+                spawnStage++;
+            }
+            else if (remainingTime == 290 && spawnStage == 2)
+            {
+                timeFallBox = rnd.Next(280, 290);
+                Debug.Log("Время прибытия бокса 2: " + timeFallBox);
+                spawnStage++;
+            }
+            else if (remainingTime == 200 && spawnStage == 3)
+            {
+                timeFallBox = rnd.Next(190, 200);
+                Debug.Log("Время прибытия бокса 3: " + timeFallBox);
+                spawnStage++;
+            }
+            else if (remainingTime == 150 && spawnStage == 4)
+            {
+                timeFallBox = rnd.Next(140, 150);
+                Debug.Log("Время прибытия бокса 4: " + timeFallBox);
+                spawnStage++;
+            }
+
+            if (Mathf.Approximately(remainingTime, timeFallBox))
             {
                 if (boxScript != null)
                 {
-                    boxScript.SpawnMultipleGreenBoxes(2);  
+                    int minBoxCount, maxBoxCount;
+
+                    switch (spawnStage)
+                    {
+                        case 2:
+                            minBoxCount = 1;
+                            maxBoxCount = 4;
+                            break;
+                        case 3:
+                            minBoxCount = 5;
+                            maxBoxCount = 8;
+                            break;
+                        case 4:
+                            minBoxCount = 2;
+                            maxBoxCount = 5;
+                            break;
+                        default:
+                            minBoxCount = 3;
+                            maxBoxCount = 6;
+                            break;
+                    }
+
+                    greenNumBox = rnd.Next(minBoxCount, maxBoxCount);
+                    Debug.Log($"Ящиков выпало на этапе {spawnStage - 1}: " + greenNumBox);
+                    boxScript.SpawnMultipleGreenBoxes(greenNumBox);
                 }
             }
 
-            if (Mathf.Approximately(remainingTime, 296f)) 
+            if (remainingTime == 100)
             {
                 if (boxScript != null)
                 {
@@ -190,7 +247,7 @@ public class HudBar : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 }
             }
 
-            if (Mathf.Approximately(remainingTime, 294f))  
+            if (remainingTime == 50)
             {
                 if (boxScript != null)
                 {
@@ -205,6 +262,7 @@ public class HudBar : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             }
         }
     }
+
 
     public void UpdateTimeText()
     {
