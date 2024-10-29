@@ -27,8 +27,8 @@ public class HudBar : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public float remainingTime = 300f;
     private BoxScript boxScript;
 
-    private int greenNumBox;
-    private float timeFallBox;
+    private int greenNumBox, yellowNumBox, redNumBox;
+    private float timeFallGreenBox, timeFallYellowBox, timeFallRedBox;
     System.Random rnd = new System.Random();
     
 
@@ -173,7 +173,9 @@ public class HudBar : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     // Time Game and Spawn Box
     public IEnumerator TimerCountdown()
     {
-        int spawnStage = 1;
+        int spawnStageGreen = 1;
+        int spawnStageYellow = 1;
+        int spawnStageRed = 1;
 
         while (remainingTime > 0)
         {
@@ -182,76 +184,152 @@ public class HudBar : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
             UpdateTimeText();
 
-            if (remainingTime == 298 && spawnStage == 1)
+            // Spawn Green Box
+
+            if (remainingTime == 298 && spawnStageGreen == 1)
             {
-                timeFallBox = rnd.Next(290, 298);
-                Debug.Log("Время прибытия бокса 1: " + timeFallBox);
-                spawnStage++;
+                timeFallGreenBox = rnd.Next(250, 290);
+                Debug.Log("<color=green>Время прибытия Green бокса 1 волна:</color> " + timeFallGreenBox);
+                spawnStageGreen++;
             }
-            else if (remainingTime == 290 && spawnStage == 2)
+            else if (remainingTime == 250 && spawnStageGreen == 2)
             {
-                timeFallBox = rnd.Next(280, 290);
-                Debug.Log("Время прибытия бокса 2: " + timeFallBox);
-                spawnStage++;
+                timeFallGreenBox = rnd.Next(200, 230);
+                Debug.Log("<color=green>Время прибытия Green бокса 2 волна:</color> " + timeFallGreenBox);
+                spawnStageGreen++;
             }
-            else if (remainingTime == 200 && spawnStage == 3)
+            else if (remainingTime == 199 && spawnStageGreen == 3)
             {
-                timeFallBox = rnd.Next(190, 200);
-                Debug.Log("Время прибытия бокса 3: " + timeFallBox);
-                spawnStage++;
+                timeFallGreenBox = rnd.Next(120, 170);
+                Debug.Log("<color=green>Время прибытия Green бокса 3 волна</color> : " + timeFallGreenBox);
+                spawnStageGreen++;
             }
-            else if (remainingTime == 150 && spawnStage == 4)
+            else if (remainingTime == 100 && spawnStageGreen == 4)
             {
-                timeFallBox = rnd.Next(140, 150);
-                Debug.Log("Время прибытия бокса 4: " + timeFallBox);
-                spawnStage++;
+                timeFallGreenBox = rnd.Next(50, 90);
+                Debug.Log("<color=green>Время прибытия Green бокса 4 волна:</color> " + timeFallGreenBox);
+                spawnStageGreen++;
             }
 
-            if (Mathf.Approximately(remainingTime, timeFallBox))
+            if (Mathf.Approximately(remainingTime, timeFallGreenBox))
             {
                 if (boxScript != null)
                 {
                     int minBoxCount, maxBoxCount;
 
-                    switch (spawnStage)
+                    switch (spawnStageGreen)
+                    {
+                        case 2:
+                            minBoxCount = 3;
+                            maxBoxCount = 5;
+                            break;
+                        case 3:
+                            minBoxCount = 2;
+                            maxBoxCount = 8;
+                            break;
+                        case 4:
+                            minBoxCount = 2;
+                            maxBoxCount = 10;
+                            break;
+                        default:
+                            minBoxCount = 2;
+                            maxBoxCount = 4;
+                            break;
+                    }
+
+                    greenNumBox = rnd.Next(minBoxCount, maxBoxCount);
+                    Debug.Log($"<color=green>Green Ящиков выпало на этапе {spawnStageGreen - 1}: {greenNumBox}</color>");
+                    boxScript.SpawnMultipleGreenBoxes(greenNumBox);
+                }
+            }
+
+            // Spawn Yellow Box
+
+            if (remainingTime == 181 && spawnStageYellow == 1)
+            {
+                timeFallYellowBox = rnd.Next(150, 180);
+                Debug.Log("<color=yellow>Время прибытия Yellow бокса 1 волна:</color> " + timeFallYellowBox);
+                spawnStageYellow++;
+            }
+            else if (remainingTime == 120 && spawnStageYellow == 2)
+            {
+                timeFallYellowBox = rnd.Next(70, 110);
+                Debug.Log("<color=yellow>Время прибытия Yellow бокса 2 волна:</color> " + timeFallYellowBox);
+                spawnStageYellow++;
+            }
+            else if (remainingTime == 71 && spawnStageYellow == 3)
+            {
+                timeFallYellowBox = rnd.Next(10, 40);
+                Debug.Log("<color=yellow>Время прибытия  Yellow бокса 3 волна</color> : " + timeFallYellowBox);
+                spawnStageYellow++;
+            }
+
+            if (Mathf.Approximately(remainingTime, timeFallYellowBox))
+            {
+                if (boxScript != null)
+                {
+                    int minBoxCount, maxBoxCount;
+
+                    switch (spawnStageYellow)
                     {
                         case 2:
                             minBoxCount = 1;
                             maxBoxCount = 4;
                             break;
                         case 3:
-                            minBoxCount = 5;
-                            maxBoxCount = 8;
-                            break;
-                        case 4:
                             minBoxCount = 2;
                             maxBoxCount = 5;
                             break;
                         default:
-                            minBoxCount = 3;
+                            minBoxCount = 2;
                             maxBoxCount = 6;
                             break;
                     }
 
-                    greenNumBox = rnd.Next(minBoxCount, maxBoxCount);
-                    Debug.Log($"Ящиков выпало на этапе {spawnStage - 1}: " + greenNumBox);
-                    boxScript.SpawnMultipleGreenBoxes(greenNumBox);
+                    yellowNumBox = rnd.Next(minBoxCount, maxBoxCount);
+                    Debug.Log($"<color=yellow>Yellow Ящиков выпало на этапе {spawnStageYellow - 1}: {yellowNumBox}</color>");
+                    boxScript.SpawnMultipleYellowBoxes(yellowNumBox);
                 }
             }
 
-            if (remainingTime == 100)
+
+
+            // Spawn Red Box
+
+            if (remainingTime == 121 && spawnStageRed == 1)
             {
-                if (boxScript != null)
-                {
-                    boxScript.SpawnMultipleYellowBoxes(2);
-                }
+                timeFallRedBox = rnd.Next(61, 120);
+                Debug.Log("<color=red>Время прибытия Red бокса 1 волна:</color> " + timeFallRedBox);
+                spawnStageRed++;
+            }
+            else if (remainingTime == 60 && spawnStageRed == 2)
+            {
+                timeFallRedBox = rnd.Next(10, 59);
+                Debug.Log("<color=red>Время прибытия Red бокса 2 волна:</color> " + timeFallRedBox);
+                spawnStageRed++;
             }
 
-            if (remainingTime == 50)
+            if (Mathf.Approximately(remainingTime, timeFallRedBox))
             {
                 if (boxScript != null)
                 {
-                    boxScript.SpawnMultipleRedBoxes(2);
+                    int minBoxCount, maxBoxCount;
+
+                    switch (spawnStageRed)
+                    {
+                        case 2:
+                            minBoxCount = 0;
+                            maxBoxCount = 1;
+                            break;
+                        default:
+                            minBoxCount = 1;
+                            maxBoxCount = 2;
+                            break;
+                    }
+
+                    redNumBox = rnd.Next(minBoxCount, maxBoxCount);
+                    Debug.Log($"<color=red>Red Ящиков выпало на этапе {spawnStageRed - 1}: {redNumBox}</color>");
+                    boxScript.SpawnMultipleRedBoxes(redNumBox);
                 }
             }
 
