@@ -17,7 +17,7 @@ public class BoxScript : MonoBehaviour
     private List<BoxCollider2D> redZoneColliders;
     private HudBar hudBar;
 
-    
+
 
     void Start()
     {

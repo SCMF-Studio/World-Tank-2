@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 public class TS001 : MonoBehaviour
@@ -23,6 +24,11 @@ public class TS001 : MonoBehaviour
     public delegate void ReloadStartedHandler(float reloadTime);
     public event ReloadStartedHandler OnReloadStarted;
 
+
+
+    // Boost System
+    private float originalSpeed, originalHeal;
+
     void Start()
     {
         muzzleTransform = GameObject.Find("TS-001_muzzle").transform;
@@ -31,6 +37,10 @@ public class TS001 : MonoBehaviour
 
         currentHP = maxHP;
 
+
+        // Boost System
+        originalSpeed = speed;
+        originalHeal = hp;
     }
 
     void Update()
@@ -88,14 +98,16 @@ public class TS001 : MonoBehaviour
         transform.Rotate(Vector3.forward, MoveHorizontalInput * turnSpeed * Time.deltaTime);
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(float attackerDamage)
     {
-        currentHP -= damage; 
+        currentHP -= attackerDamage;
+
         if (currentHP <= 0)
         {
-            Die(); 
+            Die();
         }
-        UpdateHUD(); 
+
+        UpdateHUD();
     }
 
     private void Die()
@@ -167,6 +179,12 @@ public class TS001 : MonoBehaviour
             Rigidbody2D rocketRb = newRocket.GetComponent<Rigidbody2D>();
             rocketRb.velocity = muzzleTransform.right * armoSpeed;
 
+            var bulletHandler = newRocket.GetComponent<BulletDamageHandler>();
+            if (bulletHandler != null)
+            {
+                bulletHandler.Initialize(gameObject);
+            }
+
             OnReloadStarted?.Invoke(reloading);
             yield return new WaitForSeconds(reloading);
             canShoot = true;
@@ -208,5 +226,31 @@ public class TS001 : MonoBehaviour
                 particleUpTwo.Stop();
             }
         }
+     
     }
+
+    // Boost System
+    public void ApplySpeedBoost(float duration)
+    {
+        StopCoroutine("SpeedBoostCoroutine");
+        StartCoroutine(SpeedBoostCoroutine(duration));
+    }
+
+    private IEnumerator SpeedBoostCoroutine(float duration)
+    {
+        speed *= 1.50f; 
+        yield return new WaitForSeconds(duration);
+        speed = originalSpeed;
+    }
+
+    public void ApplyHealBoost()
+    {
+        float healAmount = maxHP * 0.25f; 
+        currentHP += healAmount; 
+        currentHP = Mathf.Clamp(currentHP, 0, maxHP); 
+        UpdateHUD(); 
+    }
+
+
+
 }

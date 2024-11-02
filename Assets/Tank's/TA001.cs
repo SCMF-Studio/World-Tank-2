@@ -27,6 +27,12 @@ public class TA001 : MonoBehaviour
     public delegate void ReloadStartedHandler(float reloadTime);
     public event ReloadStartedHandler OnReloadStarted;
 
+
+
+    // Boost System
+    private float originalSpeed, originalHeal;
+
+
     void Start()
     {
         currentHP = maxHP;
@@ -34,6 +40,11 @@ public class TA001 : MonoBehaviour
         shootPosOne = GameObject.Find("ShootPosOne").transform;
         shootPosTwo = GameObject.Find("ShootPosTwo").transform;
         rb = GetComponent<Rigidbody2D>();
+
+
+        // Boost System
+        originalSpeed = speed;
+        originalHeal = hp;
     }
 
     void Update()
@@ -84,15 +95,16 @@ public class TA001 : MonoBehaviour
         transform.Rotate(Vector3.forward, MoveHorizontalInput * turnSpeed * Time.deltaTime);
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damageAmount)
     {
-        currentHP -= damage;
+        currentHP -= damageAmount;
         if (currentHP <= 0)
         {
             Die();
         }
         UpdateHUD();
     }
+
 
     private void Die()
     {
@@ -165,15 +177,29 @@ public class TA001 : MonoBehaviour
                 GameObject newRocketOne = Instantiate(bullet_standart, shootPosOne.position, muzzleTransform.rotation);
                 Rigidbody2D rocketRbOne = newRocketOne.GetComponent<Rigidbody2D>();
                 rocketRbOne.velocity = muzzleTransform.up * armoSpeed;
+
+                var bulletHandler = newRocketOne.GetComponent<BulletDamageHandler>();
+                if (bulletHandler != null)
+                {
+                    bulletHandler.Initialize(gameObject);
+                }
             }
             else
             {
                 GameObject newRocketTwo = Instantiate(bullet_standart, shootPosTwo.position, muzzleTransform.rotation);
                 Rigidbody2D rocketRbTwo = newRocketTwo.GetComponent<Rigidbody2D>();
                 rocketRbTwo.velocity = muzzleTransform.up * armoSpeed;
+
+                var bulletHandler = newRocketTwo.GetComponent<BulletDamageHandler>();
+                if (bulletHandler != null)
+                {
+                    bulletHandler.Initialize(gameObject);
+                }
             }
 
             isFirstBarrel = !isFirstBarrel;
+
+           
 
             if (isFirstBarrel)
             {
@@ -220,5 +246,27 @@ public class TA001 : MonoBehaviour
                 particleUpTwo.Stop();
             }
         }
+    }
+
+    // Boost System
+    public void ApplySpeedBoost(float duration)
+    {
+        StopCoroutine("SpeedBoostCoroutine");
+        StartCoroutine(SpeedBoostCoroutine(duration));
+    }
+
+    private IEnumerator SpeedBoostCoroutine(float duration)
+    {
+        speed *= 1.50f;
+        yield return new WaitForSeconds(duration);
+        speed = originalSpeed;
+    }
+
+    public void ApplyHealBoost()
+    {
+        float healAmount = maxHP * 0.25f;
+        currentHP += healAmount;
+        currentHP = Mathf.Clamp(currentHP, 0, maxHP);
+        UpdateHUD();
     }
 }

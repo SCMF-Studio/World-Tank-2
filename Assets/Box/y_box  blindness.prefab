@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 52572844400707394}
   - component: {fileID: 4788652698770059480}
   - component: {fileID: 4483148849532125400}
-  - component: {fileID: -416506881195036999}
   m_Layer: 0
   m_Name: y_box  blindness
   m_TagString: Untagged
@@ -131,15 +130,3 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 3.99, y: 3.77}
   m_EdgeRadius: 0
---- !u!114 &-416506881195036999
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5618122398542799133}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 774b9d86a294a3f46bbfca75e73171a3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
