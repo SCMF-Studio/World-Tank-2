@@ -401,7 +401,7 @@ Transform:
   m_GameObject: {fileID: 13318280}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -6.13243, y: -6.615889, z: 0.0009343922}
+  m_LocalPosition: {x: -4.98, y: -6.61, z: 0.0009343922}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2100,8 +2100,7 @@ MonoBehaviour:
   redZone: {fileID: 1917961803}
   greenBox:
   - {fileID: 2625660703271959897, guid: 5290351b683b5a24dbef1d40075e2139, type: 3}
-  - {fileID: 2588666467067425424, guid: b1a2760e5eaab644892a2f2f65198e78, type: 3}
-  - {fileID: 391303680425877099, guid: 080cc5ec84fb63649971dfc7530ae4fe, type: 3}
+  - {fileID: 6497705967629161848, guid: 3ad1f485c75bba04da1ea4f5efd667e2, type: 3}
   - {fileID: 6142520768899935108, guid: 9398bdfc2ae76344f9191d0dc383cc21, type: 3}
   - {fileID: 598112472278096089, guid: bec728e2c26d1584990406917c100ce5, type: 3}
   yellowBox:
@@ -3046,6 +3045,30 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 264523322}
   m_CullTransparentMesh: 1
+--- !u!1 &276752921 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 292840649953925172, guid: aa9a12832e3241842af0167aaaee86ea, type: 3}
+  m_PrefabInstance: {fileID: 836376222}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &276752927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 276752921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35cf7ea68a1f22146b7cf3cf2d158f2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHP: 1000
+  damage: 10
+  speed: 1.5
+  armoSpeed: 6
+  reloading: 2
+  moveDuration: 2
+  bullet_standart: {fileID: 6964707964533408667, guid: 6d400819fbc5d2f47be3fe1bfb61c0e9, type: 3}
 --- !u!1 &293513523
 GameObject:
   m_ObjectHideFlags: 0
@@ -8643,10 +8666,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90.969
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 1326756442200845121, guid: aa9a12832e3241842af0167aaaee86ea, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 2527844307740011447, guid: aa9a12832e3241842af0167aaaee86ea, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 292840649953925172, guid: aa9a12832e3241842af0167aaaee86ea, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 276752927}
   m_SourcePrefab: {fileID: 100100000, guid: aa9a12832e3241842af0167aaaee86ea, type: 3}
 --- !u!1 &843916806
 GameObject:
@@ -8739,7 +8770,7 @@ TilemapRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 523a0129e70f1d548a7effacf9750dd8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -18483,7 +18514,7 @@ TilemapCollider2D:
   m_GameObject: {fileID: 1102787569}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 5b2b1cf69f4298c4fad52c8c77340d16, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0

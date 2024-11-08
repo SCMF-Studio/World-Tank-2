@@ -17,6 +17,8 @@ public class TS001 : MonoBehaviour
     private Transform muzzleTransform;
     private Transform shootPos;
     [SerializeField] private GameObject bullet_standart;
+    [SerializeField] private GameObject bullet_ricochet;
+    private bool isRicochetActive = false;
     private bool canShoot = true;
     private Rigidbody2D rb;
     public ParticleSystem particleDownOne, particleDownTwo, particleUpOne, particleUpTwo;
@@ -25,9 +27,9 @@ public class TS001 : MonoBehaviour
     public event ReloadStartedHandler OnReloadStarted;
 
 
-
     // Boost System
     private float originalSpeed, originalHeal;
+
 
     void Start()
     {
@@ -175,14 +177,20 @@ public class TS001 : MonoBehaviour
         if (canShoot)
         {
             canShoot = false;
-            GameObject newRocket = Instantiate(bullet_standart, shootPos.position, muzzleTransform.rotation);
-            Rigidbody2D rocketRb = newRocket.GetComponent<Rigidbody2D>();
-            rocketRb.velocity = muzzleTransform.right * armoSpeed;
 
-            var bulletHandler = newRocket.GetComponent<BulletDamageHandler>();
-            if (bulletHandler != null)
+            GameObject bulletPrefab = isRicochetActive ? bullet_ricochet : bullet_standart;
+            GameObject newBullet = Instantiate(bulletPrefab, shootPos.position, muzzleTransform.rotation);
+
+            if (isRicochetActive)
             {
-                bulletHandler.Initialize(gameObject);
+                RicochetBullet ricochetBullet = newBullet.GetComponent<RicochetBullet>();
+                ricochetBullet.Initialize(gameObject);
+                ricochetBullet.GetComponent<Rigidbody2D>().velocity = muzzleTransform.right * armoSpeed; 
+            }
+            else
+            {
+                Rigidbody2D bulletRb = newBullet.GetComponent<Rigidbody2D>();
+                bulletRb.velocity = muzzleTransform.right * armoSpeed;
             }
 
             OnReloadStarted?.Invoke(reloading);
@@ -190,6 +198,7 @@ public class TS001 : MonoBehaviour
             canShoot = true;
         }
     }
+
 
     void ParcticleSysteme()
     {
@@ -249,6 +258,19 @@ public class TS001 : MonoBehaviour
         currentHP += healAmount; 
         currentHP = Mathf.Clamp(currentHP, 0, maxHP); 
         UpdateHUD(); 
+    }
+
+    public void ActivateRicochetBullet(float duration)
+    {
+        StopCoroutine("RicochetCoroutine");
+        StartCoroutine(RicochetCoroutine(duration));
+    }
+
+    private IEnumerator RicochetCoroutine(float duration)
+    {
+        isRicochetActive = true;
+        yield return new WaitForSeconds(duration);
+        isRicochetActive = false;
     }
 
 

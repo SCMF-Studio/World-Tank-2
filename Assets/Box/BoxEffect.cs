@@ -2,11 +2,10 @@ using UnityEngine;
 
 public class BoxEffect : MonoBehaviour
 {
-    public enum EffectType { SpeedBoost, HealBoost }
+    public enum EffectType { SpeedBoost, HealBoost, Ricochet }
     public EffectType effectType;
     public float effectDuration = 5f;
 
-    private float healAmount = 20f;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -54,6 +53,13 @@ public class BoxEffect : MonoBehaviour
                     if (tankTL != null)
                     {
                         tankTL.ApplyHealBoost();
+                    }
+                    break;
+
+                case EffectType.Ricochet:
+                    if (tankTS != null)
+                    {
+                        tankTS.ActivateRicochetBullet(effectDuration);
                     }
                     break;
 
