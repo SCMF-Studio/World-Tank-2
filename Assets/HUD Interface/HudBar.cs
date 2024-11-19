@@ -86,7 +86,11 @@ public class HudBar : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         reloadTime = newReloadTime;
 
-        StartReload();
+        if (isReloading)
+        {
+            currentReloadTime = 0f; 
+            reload.fillAmount = 0f; 
+        }
     }
 
     public void StartReload()

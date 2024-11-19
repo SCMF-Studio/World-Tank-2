@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class BoxEffect : MonoBehaviour
 {
-    public enum EffectType { SpeedBoost, HealBoost, Ricochet }
+    public enum EffectType { SpeedBoost, HealBoost, Ricochet, SmallDamage, MediumDamage, HighDamage, SpeedArmo, AdditionalHP }
     public EffectType effectType;
     public float effectDuration = 5f;
 
@@ -56,13 +56,102 @@ public class BoxEffect : MonoBehaviour
                     }
                     break;
 
-                case EffectType.Ricochet:
+                case EffectType.SmallDamage:
                     if (tankTS != null)
                     {
-                        tankTS.ActivateRicochetBullet(effectDuration);
+                        tankTS.ApplySmallDamageBoost(effectDuration);
+                    }
+                    if (tankTH != null)
+                    {
+                        tankTH.ApplySmallDamageBoost(effectDuration);
+                    }
+                    if (tankTA != null)
+                    {
+                        tankTA.ApplySmallDamageBoost(effectDuration);
+                    }
+                    if (tankTL != null)
+                    {
+                        tankTL.ApplySmallDamageBoost(effectDuration);
                     }
                     break;
 
+                case EffectType.MediumDamage:
+                    if (tankTS != null)
+                    {
+                        tankTS.ApplyMediumDamageBoost(effectDuration);
+                    }
+                    if (tankTH != null)
+                    {
+                        tankTH.ApplyMediumDamageBoost(effectDuration);
+                    }
+                    if (tankTA != null)
+                    {
+                        tankTA.ApplyMediumDamageBoost(effectDuration);
+                    }
+                    if (tankTL != null)
+                    {
+                        tankTL.ApplyMediumDamageBoost(effectDuration);
+                    }
+
+                    break;
+
+                case EffectType.HighDamage:
+                    if (tankTS != null)
+                    {
+                        tankTS.ApplyHighDamageBoost(effectDuration);
+                    }
+                    if (tankTH != null)
+                    {
+                        tankTH.ApplyHighDamageBoost(effectDuration);
+                    }
+                    if (tankTA != null)
+                    {
+                        tankTA.ApplyHighDamageBoost(effectDuration);
+                    }
+                    if (tankTL != null)
+                    {
+                        tankTL.ApplyHighDamageBoost(effectDuration);
+                    }
+                    break;
+
+                case EffectType.SpeedArmo:
+                    if (tankTS != null)
+                    {
+                        tankTS.ApplySpeedArmoBoost(effectDuration);
+                    }
+                    if (tankTH != null)
+                    {
+                        tankTH.ApplySpeedArmoBoost(effectDuration);
+                    }
+                    if (tankTA != null)
+                    {
+                        tankTA.ApplySpeedArmoBoost(effectDuration);
+                    }
+                    if (tankTL != null)
+                    {
+                        tankTL.ApplySpeedArmoBoost(effectDuration);
+                    }
+                    break;
+
+                case EffectType.AdditionalHP:
+                    if (tankTS != null)
+                    {
+                        tankTS.ApplyAdditionalHPBoost(effectDuration);
+                    }
+                    if (tankTH != null)
+                    {
+                        tankTH.ApplyAdditionalHPBoost(effectDuration);
+                    }
+                    if (tankTA != null)
+                    {
+                        tankTA.ApplyAdditionalHPBoost(effectDuration);
+                    }
+                    if (tankTL != null)
+                    {
+                        tankTL.ApplyAdditionalHPBoost(effectDuration);
+                    }
+
+                    break;
             }
             Destroy(gameObject);
         }

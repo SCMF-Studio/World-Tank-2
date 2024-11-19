@@ -65,7 +65,7 @@ public class enemy : MonoBehaviour
     public void TakeDamage(float damageAmount)
     {
         currentHP -= damageAmount;
-        Debug.Log("Враг получил урон: " + damageAmount + ", текущее HP: " + currentHP); // Вывод в консоль
+        Debug.Log("Враг получил урон: " + damageAmount + ", текущее HP: " + currentHP); 
         if (currentHP <= 0)
         {
             Die();

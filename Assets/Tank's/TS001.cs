@@ -18,7 +18,6 @@ public class TS001 : MonoBehaviour
     private Transform shootPos;
     [SerializeField] private GameObject bullet_standart;
     [SerializeField] private GameObject bullet_ricochet;
-    private bool isRicochetActive = false;
     private bool canShoot = true;
     private Rigidbody2D rb;
     public ParticleSystem particleDownOne, particleDownTwo, particleUpOne, particleUpTwo;
@@ -28,7 +27,10 @@ public class TS001 : MonoBehaviour
 
 
     // Boost System
-    private float originalSpeed, originalHeal;
+    private float originalSpeed, originalHeal, originalSpeedArmo, originalReloading, originalAdditionalHP,
+        originalSmallDamage,
+        originalMediumDamage,
+        originalHighDamage;
 
 
     void Start()
@@ -43,13 +45,21 @@ public class TS001 : MonoBehaviour
         // Boost System
         originalSpeed = speed;
         originalHeal = hp;
+        originalSmallDamage = damage;
+        originalMediumDamage = damage;
+        originalHighDamage = damage;
+        originalSpeedArmo = armoSpeed;
+        originalReloading = reloading;
+        originalAdditionalHP = maxHP;
     }
 
     void Update()
     {
+        
         MoveTank();
         RotateTurret();
         ParcticleSysteme();
+
         // Стрельба
         if (Input.GetKey(KeyCode.Space))
         {
@@ -100,9 +110,9 @@ public class TS001 : MonoBehaviour
         transform.Rotate(Vector3.forward, MoveHorizontalInput * turnSpeed * Time.deltaTime);
     }
 
-    public void TakeDamage(float attackerDamage)
+    public void TakeDamage(float damageAmount)
     {
-        currentHP -= attackerDamage;
+        currentHP -= damageAmount;
 
         if (currentHP <= 0)
         {
@@ -177,20 +187,14 @@ public class TS001 : MonoBehaviour
         if (canShoot)
         {
             canShoot = false;
+            GameObject newRocket = Instantiate(bullet_standart, shootPos.position, muzzleTransform.rotation);
+            Rigidbody2D rocketRb = newRocket.GetComponent<Rigidbody2D>();
+            rocketRb.velocity = muzzleTransform.right * armoSpeed;
 
-            GameObject bulletPrefab = isRicochetActive ? bullet_ricochet : bullet_standart;
-            GameObject newBullet = Instantiate(bulletPrefab, shootPos.position, muzzleTransform.rotation);
-
-            if (isRicochetActive)
+            var bulletHandler = newRocket.GetComponent<BulletDamageHandler>();
+            if (bulletHandler != null)
             {
-                RicochetBullet ricochetBullet = newBullet.GetComponent<RicochetBullet>();
-                ricochetBullet.Initialize(gameObject);
-                ricochetBullet.GetComponent<Rigidbody2D>().velocity = muzzleTransform.right * armoSpeed; 
-            }
-            else
-            {
-                Rigidbody2D bulletRb = newBullet.GetComponent<Rigidbody2D>();
-                bulletRb.velocity = muzzleTransform.right * armoSpeed;
+                bulletHandler.Initialize(gameObject);
             }
 
             OnReloadStarted?.Invoke(reloading);
@@ -199,7 +203,7 @@ public class TS001 : MonoBehaviour
         }
     }
 
-
+   
     void ParcticleSysteme()
     {
         if (Input.GetKey(KeyCode.W))
@@ -260,17 +264,93 @@ public class TS001 : MonoBehaviour
         UpdateHUD(); 
     }
 
-    public void ActivateRicochetBullet(float duration)
+    public void ApplySmallDamageBoost(float duration)
     {
-        StopCoroutine("RicochetCoroutine");
-        StartCoroutine(RicochetCoroutine(duration));
+        StopCoroutine("SmallDamageBoostCoroutine");
+        StartCoroutine(SmallDamageBoostCoroutine(duration));
     }
 
-    private IEnumerator RicochetCoroutine(float duration)
+    private IEnumerator SmallDamageBoostCoroutine(float duration)
     {
-        isRicochetActive = true;
+        damage *= 1.30f;
         yield return new WaitForSeconds(duration);
-        isRicochetActive = false;
+        damage = originalSmallDamage;
+    }
+
+    public void ApplyMediumDamageBoost(float duration) 
+    {
+        StopCoroutine("MediumDamageBoostCoroutine");
+        StartCoroutine(MediumDamageBoostCoroutine(duration));
+    }
+
+    private IEnumerator MediumDamageBoostCoroutine(float duration)
+    {
+        damage *= 1.70f;
+        yield return new WaitForSeconds(duration);
+        damage = originalMediumDamage;
+    }
+
+    public void ApplyHighDamageBoost(float duration)
+    {
+        StopCoroutine("HighDamageBoostCoroutine");
+        StartCoroutine(HighDamageBoostCoroutine(duration));
+    }
+
+    private IEnumerator HighDamageBoostCoroutine(float duration)
+    {
+        damage *= 3.00f;
+        yield return new WaitForSeconds(duration);
+        damage = originalHighDamage;
+    }
+
+    public void ApplySpeedArmoBoost(float duration)
+    {
+        StopCoroutine("SpeedArmoBoostCoroutine");
+        StartCoroutine(SpeedArmoBoostCoroutine(duration));
+    }
+
+    private IEnumerator SpeedArmoBoostCoroutine(float duration)
+    {
+        armoSpeed *= 1.70f;
+        reloading /= 1.80f;
+
+        HudBar hudBar = FindObjectOfType<HudBar>();
+        if (hudBar != null)
+        {
+            hudBar.SetReloadTime(reloading);
+            hudBar.StartReload(); 
+        }
+
+        yield return new WaitForSeconds(duration);
+
+        armoSpeed = originalSpeedArmo;
+        reloading = originalReloading;
+
+        if (hudBar != null)
+        {
+            hudBar.SetReloadTime(reloading); 
+        }
+    }
+
+    public void ApplyAdditionalHPBoost(float duration)
+    {
+        StopCoroutine("AdditionalHPBoostCoroutine");
+        StartCoroutine(AdditionalHPBoostCoroutine(duration));
+    }
+
+    private IEnumerator AdditionalHPBoostCoroutine(float duration)
+    {
+        maxHP += 50f;
+        currentHP = maxHP; 
+        UpdateHUD(); 
+
+        yield return new WaitForSeconds(duration);
+
+        maxHP = originalAdditionalHP; 
+
+     
+        currentHP = Mathf.Clamp(currentHP, 0, maxHP);
+        UpdateHUD(); 
     }
 
 

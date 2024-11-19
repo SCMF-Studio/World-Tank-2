@@ -19,14 +19,25 @@ public class AdminConsole : MonoBehaviour
     public TMP_InputField inputReload, inputSpeed, inputSpeed_rotation, inputSpeed_turn, inputHp, inputMaxHp, inputDamage, inputSpeedArmo, inputTime;
     private float input_rl, input_sp, input_sp_rt, input_sp_turn, input_hp, input_max_hp, input_dm, input_spd_armo, input_time;
 
-    public Button[] bt_sp;
+    public Button[] bt_sp, bt_box_sp;
+    public int[] spawnCounts;
     public Transform[] spawnPos;
-    public GameObject a_cs, a_rs, a_ss, a_hps, a_ds, a_t;
-    public Button a_cs_exit, a_rs_exit, a_ss_exit, a_hps_exit, a_ds_exit, a_t_exit;
+    public GameObject a_cs, a_rs, a_ss, a_hps, a_ds, a_t, a_box;
+    public Button a_cs_exit, a_rs_exit, a_ss_exit, a_hps_exit, a_ds_exit, a_t_exit, a_box_exit;
 
 
     void Start()
     {
+        // Spawn Box
+
+        boxScript = FindObjectOfType<BoxScript>(); 
+
+        for (int i = 0; i < bt_box_sp.Length; i++)
+        {
+            int index = i; // Локальная копия переменной для замыкания
+            bt_box_sp[i].onClick.AddListener(() => SpawnBoxes(index));
+        }
+
         // SpawnPoint
         for (int i = 0; i < bt_sp.Length; i++)
         {
@@ -44,6 +55,7 @@ public class AdminConsole : MonoBehaviour
         a_hps.SetActive(false);
         a_ds.SetActive(false);
         a_t.SetActive(false);
+        a_box.SetActive(false);
 
         if (managerGame != null)
         {
@@ -98,7 +110,7 @@ public class AdminConsole : MonoBehaviour
 
     }
 
-
+    
     // Reload Setting
     public void OnReloadChange(string inputText)
     {
@@ -349,6 +361,34 @@ public class AdminConsole : MonoBehaviour
         }
     }
 
+    // Spawn Box 
+    private void SpawnBoxes(int boxType)
+    {
+        if (boxScript == null)
+        {
+            return;
+        }
+
+        int count = (boxType >= 0 && boxType < spawnCounts.Length) ? spawnCounts[boxType] : 1;
+
+        switch (boxType)
+        {
+            case 0:
+                boxScript.SpawnMultipleGreenBoxes(count);
+                break;
+
+            case 1:
+                boxScript.SpawnMultipleYellowBoxes(count);
+                break;
+
+            case 2:
+                boxScript.SpawnMultipleRedBoxes(count);
+                break;
+
+            default:
+                break;
+        }
+    }
     public void SpawnPoint()
     {
         a_cs.SetActive(true);
@@ -422,5 +462,17 @@ public class AdminConsole : MonoBehaviour
     public void TimeHide()
     {
         a_t.SetActive(false);
+    }
+
+    // BoxSpawn
+
+    public void BoxSpawnShow()
+    {
+        a_box.SetActive(true);
+    }
+
+    public void BoxSpawnHide()
+    {
+        a_box.SetActive(false);
     }
 }

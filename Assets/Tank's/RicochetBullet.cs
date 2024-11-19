@@ -28,8 +28,6 @@ public class RicochetBullet : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("Enemy"))
         {
-            var target = collision.gameObject.GetComponent<TS001>();
-            if (target != null) target.TakeDamage(damage_bullet);
 
             Destroy(gameObject);
         }

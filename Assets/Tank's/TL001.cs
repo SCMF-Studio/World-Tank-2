@@ -26,7 +26,10 @@ public class TL001 : MonoBehaviour
 
 
     // Boost System
-    private float originalSpeed, originalHeal;
+    private float originalSpeed, originalHeal, originalSpeedArmo, originalReloading, originalAdditionalHP,
+       originalSmallDamage,
+       originalMediumDamage,
+       originalHighDamage;
 
 
     void Start()
@@ -41,6 +44,12 @@ public class TL001 : MonoBehaviour
         // Boost System
         originalSpeed = speed;
         originalHeal = hp;
+        originalSmallDamage = damage;
+        originalMediumDamage = damage;
+        originalHighDamage = damage;
+        originalSpeedArmo = armoSpeed;
+        originalReloading = reloading;
+        originalAdditionalHP = maxHP;
     }
 
     void Update()
@@ -242,6 +251,95 @@ public class TL001 : MonoBehaviour
     {
         float healAmount = maxHP * 0.25f;
         currentHP += healAmount;
+        currentHP = Mathf.Clamp(currentHP, 0, maxHP);
+        UpdateHUD();
+    }
+
+    public void ApplySmallDamageBoost(float duration)
+    {
+        StopCoroutine("SmallDamageBoostCoroutine");
+        StartCoroutine(SmallDamageBoostCoroutine(duration));
+    }
+
+    private IEnumerator SmallDamageBoostCoroutine(float duration)
+    {
+        damage *= 1.30f;
+        yield return new WaitForSeconds(duration);
+        damage = originalSmallDamage;
+    }
+
+    public void ApplyMediumDamageBoost(float duration)
+    {
+        StopCoroutine("MediumDamageBoostCoroutine");
+        StartCoroutine(MediumDamageBoostCoroutine(duration));
+    }
+
+    private IEnumerator MediumDamageBoostCoroutine(float duration)
+    {
+        damage *= 1.70f;
+        yield return new WaitForSeconds(duration);
+        damage = originalMediumDamage;
+    }
+
+    public void ApplyHighDamageBoost(float duration)
+    {
+        StopCoroutine("HighDamageBoostCoroutine");
+        StartCoroutine(HighDamageBoostCoroutine(duration));
+    }
+
+    private IEnumerator HighDamageBoostCoroutine(float duration)
+    {
+        damage *= 3.00f;
+        yield return new WaitForSeconds(duration);
+        damage = originalHighDamage;
+    }
+
+    public void ApplySpeedArmoBoost(float duration)
+    {
+        StopCoroutine("SpeedArmoBoostCoroutine");
+        StartCoroutine(SpeedArmoBoostCoroutine(duration));
+    }
+
+    private IEnumerator SpeedArmoBoostCoroutine(float duration)
+    {
+        armoSpeed *= 1.70f;
+        reloading /= 1.80f;
+
+        HudBar hudBar = FindObjectOfType<HudBar>();
+        if (hudBar != null)
+        {
+            hudBar.SetReloadTime(reloading);
+            hudBar.StartReload();
+        }
+
+        yield return new WaitForSeconds(duration);
+
+        armoSpeed = originalSpeedArmo;
+        reloading = originalReloading;
+
+        if (hudBar != null)
+        {
+            hudBar.SetReloadTime(reloading);
+        }
+    }
+
+    public void ApplyAdditionalHPBoost(float duration)
+    {
+        StopCoroutine("AdditionalHPBoostCoroutine");
+        StartCoroutine(AdditionalHPBoostCoroutine(duration));
+    }
+
+    private IEnumerator AdditionalHPBoostCoroutine(float duration)
+    {
+        maxHP += 50f;
+        currentHP = maxHP;
+        UpdateHUD();
+
+        yield return new WaitForSeconds(duration);
+
+        maxHP = originalAdditionalHP;
+
+
         currentHP = Mathf.Clamp(currentHP, 0, maxHP);
         UpdateHUD();
     }

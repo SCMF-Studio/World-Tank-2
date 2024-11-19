@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2278355462638061413}
   - component: {fileID: 8926913636535815043}
   - component: {fileID: -5368869245352942368}
+  - component: {fileID: -6616269795589333272}
   m_Layer: 0
   m_Name: r_box high damage
   m_TagString: Untagged
@@ -130,3 +131,17 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 3.99, y: 3.77}
   m_EdgeRadius: 0
+--- !u!114 &-6616269795589333272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2432386194694199753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00cca148bc3b5d44cb1756cb8e4799e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effectType: 5
+  effectDuration: 15

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1187935295172701187}
   - component: {fileID: 5119589644781801525}
   - component: {fileID: 7529992008421763650}
+  - component: {fileID: 4236472493935247580}
   m_Layer: 0
   m_Name: y_box medium damage
   m_TagString: Untagged
@@ -130,3 +131,17 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 3.99, y: 3.77}
   m_EdgeRadius: 0
+--- !u!114 &4236472493935247580
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3607993515753942224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00cca148bc3b5d44cb1756cb8e4799e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effectType: 4
+  effectDuration: 20
