@@ -51,12 +51,34 @@ public class BulletDamageHandler : MonoBehaviour
             }
             else if (targetTankTL != null)
             {
-                targetTankTL.TakeDamage(damage_bullet); 
+                targetTankTL.TakeDamage(damage_bullet);
             }
             else if (targetEnemy != null)
             {
                 targetEnemy.TakeDamage(damage_bullet);
+                TS001 shooterTS = shooter.GetComponent<TS001>();
+                TH001 shooterTH = shooter.GetComponent<TH001>();
+                TA001 shooterTA = shooter.GetComponent<TA001>();
+                TL001 shooterTL = shooter.GetComponent<TL001>();
+
+                if (shooterTS != null && shooterTS.IsFreezeEffectActive)
+                {
+                    targetEnemy.ApplySpeedReduction(0.5f, 5f); 
+                }
+                if(shooterTH != null && shooterTH.IsFreezeEffectActive)
+                {
+                    targetEnemy.ApplySpeedReduction(0.5f, 5f);
+                }
+                if(shooterTA != null && shooterTA.IsFreezeEffectActive)
+                {
+                    targetEnemy.ApplySpeedReduction(0.5f, 5f);
+                }
+                if(shooterTL != null && shooterTL.IsFreezeEffectActive)
+                {
+                    targetEnemy.ApplySpeedReduction(0.5f, 5f);
+                }
             }
+
 
             Destroy(gameObject);
         }
@@ -65,6 +87,7 @@ public class BulletDamageHandler : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
 
     private void OnBecameInvisible()
     {

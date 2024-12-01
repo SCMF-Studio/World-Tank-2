@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using TMPro.Examples;
 using UnityEngine;
 
 public class TS001 : MonoBehaviour
@@ -27,10 +28,11 @@ public class TS001 : MonoBehaviour
 
 
     // Boost System
-    private float originalSpeed, originalHeal, originalSpeedArmo, originalReloading, originalAdditionalHP,
+    private float originalSpeed, originalHeal, originalSpeedArmo, originalReloading, originalAdditionalHP, 
         originalSmallDamage,
         originalMediumDamage,
-        originalHighDamage;
+        originalHighDamage, originalDamage;
+    
 
 
     void Start()
@@ -48,6 +50,7 @@ public class TS001 : MonoBehaviour
         originalSmallDamage = damage;
         originalMediumDamage = damage;
         originalHighDamage = damage;
+        originalDamage = damage;
         originalSpeedArmo = armoSpeed;
         originalReloading = reloading;
         originalAdditionalHP = maxHP;
@@ -352,6 +355,26 @@ public class TS001 : MonoBehaviour
         currentHP = Mathf.Clamp(currentHP, 0, maxHP);
         UpdateHUD(); 
     }
+
+
+    private bool freezeEffectActive = false;
+    public bool IsFreezeEffectActive
+    {
+        get { return freezeEffectActive; }
+    }
+
+    public void ActivateFreezeEffect(float duration)
+    {
+        freezeEffectActive = true;
+        StartCoroutine(FreezeEffectCoroutine(duration));
+    }
+
+    private IEnumerator FreezeEffectCoroutine(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        freezeEffectActive = false;
+    }
+
 
 
 

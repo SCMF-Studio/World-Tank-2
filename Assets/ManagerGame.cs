@@ -1,7 +1,8 @@
-using UnityEngine;
+﻿using UnityEngine;
 using TMPro;
 using static UnityEditor.Experimental.GraphView.GraphView;
 using System.Runtime.CompilerServices;
+using System.Collections;
 
 public class ManagerGame : MonoBehaviour
 {
@@ -12,7 +13,6 @@ public class ManagerGame : MonoBehaviour
     private bool isTankSelected = false;
     private GameObject selectedTank;
     private GameObject spawnedTank;
-
     //Camera
     public CameraConroller cameraController;
 
@@ -42,6 +42,14 @@ public class ManagerGame : MonoBehaviour
         int value = rnd.Next(1, 7);
         pos = value;
         Debug.Log(value);
+    }
+    public void SetTarget(Transform target)
+    {
+        if (target != null)
+        {
+            
+            transform.position = target.position + new Vector3(0, 0, -10); 
+        }
     }
 
     public void ChangeText(string newText)
@@ -73,11 +81,12 @@ public class ManagerGame : MonoBehaviour
         }
 
         spawnedTank = Instantiate(tankPrefab);
-        Possition(spawnedTank);
-        cameraController.SetTarget(spawnedTank.transform);
+        Possition(spawnedTank);  // Перемещаем танк в правильное место
+
+        cameraController.SetTarget(spawnedTank.transform);  // Устанавливаем новый таргет для камеры
+
         selectedTank = tankPrefab;
 
-        // SetReload
         float reloadTime = GetReloadTime(spawnedTank);
         hudBar.SetReloadTime(reloadTime);
 
@@ -124,10 +133,7 @@ public class ManagerGame : MonoBehaviour
         return 0f;
     }
 
-    public void HeartPoint(GameObject tank)
-    {
-        Debug.Log("ss");
-    }
+
     public void TankStandart0001()
     {
         SelectTank("Your choice: TS-0001", tank_ts0001);
@@ -180,4 +186,8 @@ public class ManagerGame : MonoBehaviour
                 break;
         }
     }
+
+
+
+
 }

@@ -367,4 +367,22 @@ public class TA001 : MonoBehaviour
         currentHP = Mathf.Clamp(currentHP, 0, maxHP);
         UpdateHUD();
     }
+
+    private bool freezeEffectActive = false;
+    public bool IsFreezeEffectActive
+    {
+        get { return freezeEffectActive; }
+    }
+
+    public void ActivateFreezeEffect(float duration)
+    {
+        freezeEffectActive = true;
+        StartCoroutine(FreezeEffectCoroutine(duration));
+    }
+
+    private IEnumerator FreezeEffectCoroutine(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        freezeEffectActive = false;
+    }
 }

@@ -91,5 +91,28 @@ public class enemy : MonoBehaviour
         Debug.Log("Враг уничтожен!");
         Destroy(gameObject);
     }
-    
+
+
+    private Coroutine speedReductionCoroutine;
+
+    public void ApplySpeedReduction(float reductionFactor, float duration)
+    {
+        if (speedReductionCoroutine != null)
+        {
+            StopCoroutine(speedReductionCoroutine);
+        }
+        speedReductionCoroutine = StartCoroutine(SpeedReductionCoroutine(reductionFactor, duration));
+    }
+
+    private IEnumerator SpeedReductionCoroutine(float reductionFactor, float duration)
+    {
+        float originalSpeed = speed;
+        speed *= reductionFactor;
+        yield return new WaitForSeconds(duration);
+        speed = originalSpeed;
+        speedReductionCoroutine = null;
+    }
+
+
+
 }

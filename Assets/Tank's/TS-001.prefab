@@ -19608,6 +19608,8 @@ MonoBehaviour:
   particleDownTwo: {fileID: 8349686104963052921}
   particleUpOne: {fileID: 8420681542524633841}
   particleUpTwo: {fileID: 7199087747770854810}
+  juggernaut: {fileID: 3410993791816849852, guid: 49ed806694a38f448a94279760b7e860, type: 3}
+  tank: {fileID: 8371053961941345875}
 --- !u!61 &7447302818155004630
 BoxCollider2D:
   m_ObjectHideFlags: 0

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4479010864291626314}
   - component: {fileID: 5954251370401886187}
   - component: {fileID: 3402414902050809459}
+  - component: {fileID: -8572375166720812251}
   m_Layer: 0
   m_Name: g_box freezing
   m_TagString: Untagged
@@ -130,3 +131,17 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 3.99, y: 3.77}
   m_EdgeRadius: 0
+--- !u!114 &-8572375166720812251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2625660703271959897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00cca148bc3b5d44cb1756cb8e4799e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effectType: 8
+  effectDuration: 10
