@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using TMPro.Examples;
 using UnityEngine;
 
@@ -32,7 +33,6 @@ public class TS001 : MonoBehaviour
         originalSmallDamage,
         originalMediumDamage,
         originalHighDamage, originalDamage;
-    
 
 
     void Start()

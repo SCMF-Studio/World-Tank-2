@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class TA001 : MonoBehaviour
@@ -35,7 +36,8 @@ public class TA001 : MonoBehaviour
        originalMediumDamage,
        originalHighDamage;
 
-
+    // Effect Hud
+    private Dictionary<BoxEffect.EffectType, float> activeEffects = new Dictionary<BoxEffect.EffectType, float>();
     void Start()
     {
         currentHP = maxHP;
@@ -257,9 +259,45 @@ public class TA001 : MonoBehaviour
         }
     }
 
+    
+    // Effect Hud
+    public bool IsEffectActive(BoxEffect.EffectType effectType)
+    {
+        if (activeEffects.ContainsKey(effectType))
+        {
+            return true; // Эффект уже активен
+        }
+        return false;
+    }
+
+    public void ActivateEffect(BoxEffect.EffectType effectType, float duration)
+    {
+        if (activeEffects.ContainsKey(effectType))
+        {
+            activeEffects[effectType] = duration;
+        }
+        else
+        {
+            activeEffects.Add(effectType, duration);
+        }
+
+        StartCoroutine(DeactivateEffectAfterDuration(effectType, duration));
+    }
+
+    private IEnumerator DeactivateEffectAfterDuration(BoxEffect.EffectType effectType, float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        if (activeEffects.ContainsKey(effectType))
+        {
+            activeEffects.Remove(effectType);
+        }
+    }
+
     // Boost System
     public void ApplySpeedBoost(float duration)
     {
+        if (IsEffectActive(BoxEffect.EffectType.SpeedBoost)) return;
+        ActivateEffect(BoxEffect.EffectType.SpeedBoost, duration);
         StopCoroutine("SpeedBoostCoroutine");
         StartCoroutine(SpeedBoostCoroutine(duration));
     }
@@ -281,6 +319,8 @@ public class TA001 : MonoBehaviour
 
     public void ApplySmallDamageBoost(float duration)
     {
+        if (IsEffectActive(BoxEffect.EffectType.SmallDamage)) return;
+        ActivateEffect(BoxEffect.EffectType.SmallDamage, duration);
         StopCoroutine("SmallDamageBoostCoroutine");
         StartCoroutine(SmallDamageBoostCoroutine(duration));
     }
@@ -294,6 +334,8 @@ public class TA001 : MonoBehaviour
 
     public void ApplyMediumDamageBoost(float duration)
     {
+        if (IsEffectActive(BoxEffect.EffectType.MediumDamage)) return;
+        ActivateEffect(BoxEffect.EffectType.MediumDamage, duration);
         StopCoroutine("MediumDamageBoostCoroutine");
         StartCoroutine(MediumDamageBoostCoroutine(duration));
     }
@@ -307,6 +349,8 @@ public class TA001 : MonoBehaviour
 
     public void ApplyHighDamageBoost(float duration)
     {
+        if (IsEffectActive(BoxEffect.EffectType.HighDamage)) return;
+        ActivateEffect(BoxEffect.EffectType.HighDamage, duration);
         StopCoroutine("HighDamageBoostCoroutine");
         StartCoroutine(HighDamageBoostCoroutine(duration));
     }
@@ -320,6 +364,8 @@ public class TA001 : MonoBehaviour
 
     public void ApplySpeedArmoBoost(float duration)
     {
+        if (IsEffectActive(BoxEffect.EffectType.SpeedArmo)) return;
+        ActivateEffect(BoxEffect.EffectType.SpeedArmo, duration);
         StopCoroutine("SpeedArmoBoostCoroutine");
         StartCoroutine(SpeedArmoBoostCoroutine(duration));
     }
@@ -349,6 +395,8 @@ public class TA001 : MonoBehaviour
 
     public void ApplyAdditionalHPBoost(float duration)
     {
+        if (IsEffectActive(BoxEffect.EffectType.AdditionalHP)) return;
+        ActivateEffect(BoxEffect.EffectType.AdditionalHP, duration);
         StopCoroutine("AdditionalHPBoostCoroutine");
         StartCoroutine(AdditionalHPBoostCoroutine(duration));
     }
@@ -368,6 +416,7 @@ public class TA001 : MonoBehaviour
         UpdateHUD();
     }
 
+
     private bool freezeEffectActive = false;
     public bool IsFreezeEffectActive
     {
@@ -376,6 +425,8 @@ public class TA001 : MonoBehaviour
 
     public void ActivateFreezeEffect(float duration)
     {
+        if (IsEffectActive(BoxEffect.EffectType.Freez)) return;
+        ActivateEffect(BoxEffect.EffectType.Freez, duration);
         freezeEffectActive = true;
         StartCoroutine(FreezeEffectCoroutine(duration));
     }

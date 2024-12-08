@@ -5,7 +5,13 @@ public class BoxEffect : MonoBehaviour
     public enum EffectType { SpeedBoost, HealBoost, Ricochet, SmallDamage, MediumDamage, HighDamage, SpeedArmo, AdditionalHP, Freez, Juggernaut }
     public EffectType effectType;
     public float effectDuration = 5f;
-    
+    private HudBar hudBar;
+
+
+    private void Start()
+    {
+        hudBar = FindObjectOfType<HudBar>();
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -16,8 +22,10 @@ public class BoxEffect : MonoBehaviour
 
         if (tankTS != null || tankTH != null || tankTA != null || tankTL != null)
         {
+            
             switch (effectType)
             {
+
                 case EffectType.SpeedBoost:
                     ApplySpeedBoost(tankTS, tankTH, tankTA, tankTL);
                     break;
@@ -52,8 +60,10 @@ public class BoxEffect : MonoBehaviour
 
                
             }
+            hudBar.AddEffectIcon(effectType);
             Destroy(gameObject);
         }
+
     }
 
     private void ApplySpeedBoost(TS001 tankTS, TH001 tankTH, TA001 tankTA, TL001 tankTL)
@@ -118,7 +128,9 @@ public class BoxEffect : MonoBehaviour
         if (tankTH != null) tankTH.ActivateFreezeEffect(effectDuration);
         if (tankTA != null) tankTA.ActivateFreezeEffect(effectDuration);
         if (tankTL != null) tankTL.ActivateFreezeEffect(effectDuration);
+
+        
     }
 
-    
+
 }

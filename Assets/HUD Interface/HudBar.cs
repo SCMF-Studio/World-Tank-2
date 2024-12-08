@@ -6,6 +6,9 @@ using System.IO;
 using TMPro;
 using static UnityEditor.PlayerSettings;
 using System.Text.RegularExpressions;
+using System.Collections.Generic;
+using System.Linq;
+using static BoxEffect;
 
 public class HudBar : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
@@ -30,14 +33,17 @@ public class HudBar : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private int greenNumBox, yellowNumBox, redNumBox;
     private float timeFallGreenBox, timeFallYellowBox, timeFallRedBox;
     System.Random rnd = new System.Random();
-    
 
+    [SerializeField] private Image freezeIcon, speedIcon; // Тут надо попробовать поменять переменые с IconPrefab
+    [SerializeField] private float effectDuration = 5f;
+    [SerializeField] private Transform effectsIconContainer;
+    [SerializeField] private GameObject iconPrefab; // Префаб иконки
 
-
+    private List<Image> activeIcons = new List<Image>(); // Список активных иконок
     void Start()
     {
         HideObject();
-
+        
         if (a_password != null)
         {
             a_password.onEndEdit.AddListener(CheckPassword);
@@ -53,6 +59,9 @@ public class HudBar : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         boxScript = FindObjectOfType<BoxScript>();
         UpdateTimeText();
         StartCoroutine(TimerCountdown());
+
+        
+
     }
 
     void Update()
@@ -63,7 +72,7 @@ public class HudBar : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
     }
 
-
+    
 
     public void UpdateHPBar(float currentHP, float maxHP)
     {
@@ -371,4 +380,43 @@ public class HudBar : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
         a_password.text = "";
     }
+    public void AddEffectIcon(EffectType effect)
+    {
+        Image icon = Instantiate(iconPrefab, effectsIconContainer).GetComponent<Image>();
+        switch (effect)
+        {
+            case EffectType.SpeedBoost:
+                icon.sprite = speedIcon.sprite;
+                break;
+            case EffectType.Freez:
+                icon.sprite = freezeIcon.sprite;
+                break;
+
+        }
+
+        activeIcons.Add(icon);
+        SortIcons();  // Сортируем иконки после добавления
+    }
+
+    // Сортировка иконок по времени или типу эффекта
+    private void SortIcons()
+    {
+        // В этом примере мы сортируем иконки по порядку их появления (по времени).
+        // Можно адаптировать под другие нужды.
+        for (int i = 0; i < activeIcons.Count; i++)
+        {
+            activeIcons[i].transform.SetSiblingIndex(i);  // Позиционируем иконки
+        }
+    }
+
+    // Метод для удаления всех иконок
+    public void ClearEffectIcons()
+    {
+        foreach (var icon in activeIcons)
+        {
+            Destroy(icon.gameObject); 
+        }
+        activeIcons.Clear();  
+    }
+
 }
