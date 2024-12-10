@@ -1,10 +1,15 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
+using System.Linq;
+using System.Collections.Generic;
+
 
 public class BoxEffect : MonoBehaviour
 {
     public enum EffectType { SpeedBoost, HealBoost, Ricochet, SmallDamage, MediumDamage, HighDamage, SpeedArmo, AdditionalHP, Freez, Juggernaut }
     public EffectType effectType;
-    public float effectDuration = 5f;
+    public float effectDuration;
     private HudBar hudBar;
 
 
@@ -28,39 +33,47 @@ public class BoxEffect : MonoBehaviour
 
                 case EffectType.SpeedBoost:
                     ApplySpeedBoost(tankTS, tankTH, tankTA, tankTL);
+                    hudBar.AddEffectIcon(effectType, effectDuration);
                     break;
 
                 case EffectType.HealBoost:
                     ApplyHealBoost(tankTS, tankTH, tankTA, tankTL);
+                    hudBar.AddEffectIcon(effectType, effectDuration);
                     break;
 
                 case EffectType.SmallDamage:
                     ApplySmallDamageBoost(tankTS, tankTH, tankTA, tankTL);
+                    hudBar.AddEffectIcon(effectType, effectDuration);
                     break;
 
                 case EffectType.MediumDamage:
                     ApplyMediumDamageBoost(tankTS, tankTH, tankTA, tankTL);
+                    hudBar.AddEffectIcon(effectType, effectDuration);
                     break;
 
                 case EffectType.HighDamage:
                     ApplyHighDamageBoost(tankTS, tankTH, tankTA, tankTL);
+                    hudBar.AddEffectIcon(effectType, effectDuration);
                     break;
 
                 case EffectType.SpeedArmo:
                     ApplySpeedArmoBoost(tankTS, tankTH, tankTA, tankTL);
+                    hudBar.AddEffectIcon(effectType, effectDuration);
                     break;
 
                 case EffectType.AdditionalHP:
                     ApplyAdditionalHPBoost(tankTS, tankTH, tankTA, tankTL);
+                    hudBar.AddEffectIcon(effectType, effectDuration);
                     break;
 
                 case EffectType.Freez:
                     ApplyFreezeEffect(tankTS, tankTH, tankTA, tankTL);
+                    hudBar.AddEffectIcon(effectType, effectDuration);
                     break;
 
                
             }
-            hudBar.AddEffectIcon(effectType);
+            hudBar.AddEffectIcon(effectType, effectDuration);
             Destroy(gameObject);
         }
 
@@ -129,8 +142,20 @@ public class BoxEffect : MonoBehaviour
         if (tankTA != null) tankTA.ActivateFreezeEffect(effectDuration);
         if (tankTL != null) tankTL.ActivateFreezeEffect(effectDuration);
 
-        
+        StartCoroutine(RemoveEffectAfterDuration(effectType));
     }
 
+    private List<Image> activeIcons; 
 
+    private IEnumerator RemoveEffectAfterDuration(BoxEffect.EffectType effectType)
+    {
+        yield return new WaitForSeconds(effectDuration);
+
+        Image iconToRemove = activeIcons.FirstOrDefault(icon => icon.sprite != null && icon.sprite.name == effectType.ToString());
+
+        if (iconToRemove != null)
+        {
+            hudBar.RemoveEffectIcon(iconToRemove);
+        }
+    }
 }

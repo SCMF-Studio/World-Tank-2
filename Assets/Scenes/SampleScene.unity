@@ -15440,6 +15440,7 @@ GameObject:
   - component: {fileID: 1007773368}
   - component: {fileID: 1007773370}
   - component: {fileID: 1007773369}
+  - component: {fileID: 1007773371}
   m_Layer: 5
   m_Name: EffectsIconContainer
   m_TagString: Untagged
@@ -15480,7 +15481,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 0, b: 0, a: 0.08627451}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -15504,6 +15505,30 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1007773367}
   m_CullTransparentMesh: 1
+--- !u!114 &1007773371
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1007773367}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  m_StartCorner: 0
+  m_StartAxis: 1
+  m_CellSize: {x: 100, y: 100}
+  m_Spacing: {x: 0, y: 0}
+  m_Constraint: 0
+  m_ConstraintCount: 2
 --- !u!1 &1040460727
 GameObject:
   m_ObjectHideFlags: 0
@@ -28563,11 +28588,19 @@ MonoBehaviour:
   a_list: {fileID: 238845972}
   time_game: {fileID: 616437242}
   remainingTime: 300
-  freezeIcon: {fileID: 0}
-  speedIcon: {fileID: 0}
+  freezeIcon: {fileID: 3707727971888795917, guid: 320e4a0b2e18c724db9a1431f5d95251, type: 3}
+  speedIcon: {fileID: 2114198275965050340, guid: 3e5f4979c0c3a3d4bbc196d635a7027a, type: 3}
+  additionalHPIcon: {fileID: 731070957688919301, guid: c13fb690a1a62ca4cb8b5266034e5a41, type: 3}
+  blindneesIcon: {fileID: 568680015445109186, guid: 40e5ac74b9e82d84997443353e90b698, type: 3}
+  healIcon: {fileID: 4313518523512666008, guid: 863289c199fe4de4088b876e96f7459c, type: 3}
+  smalldamageIcon: {fileID: 4408321585962940197, guid: 25e31b10c7dd6e04d9459b9f6705565b, type: 3}
+  mediumdamageIcon: {fileID: 640155510406467911, guid: 108fcc18dbb784e43a2f53cec21776e5, type: 3}
+  highdamageIcon: {fileID: 6888045717064190675, guid: 2e98d61d93ac81e4d8f5200cfadb0a35, type: 3}
+  ricochetIcon: {fileID: 1939346111423772628, guid: 03935e00a568139479caab12b471b3f9, type: 3}
+  speedarmoIcon: {fileID: 4756991068952419384, guid: 11d1f877678c59a4e956ba4357c20fd9, type: 3}
   effectDuration: 5
   effectsIconContainer: {fileID: 1007773368}
-  iconPrefab: {fileID: 0}
+  iconSlot: {fileID: 8299212795810579798, guid: 320e4a0b2e18c724db9a1431f5d95251, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

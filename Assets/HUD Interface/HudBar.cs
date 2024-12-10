@@ -34,12 +34,12 @@ public class HudBar : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private float timeFallGreenBox, timeFallYellowBox, timeFallRedBox;
     System.Random rnd = new System.Random();
 
-    [SerializeField] private Image freezeIcon, speedIcon; // Тут надо попробовать поменять переменые с IconPrefab
-    [SerializeField] private float effectDuration = 5f;
+    [SerializeField] private Image freezeIcon, speedIcon, additionalHPIcon, blindneesIcon, healIcon, smalldamageIcon, mediumdamageIcon, highdamageIcon, ricochetIcon, speedarmoIcon; 
+    [SerializeField] private float effectDuration;
     [SerializeField] private Transform effectsIconContainer;
-    [SerializeField] private GameObject iconPrefab; // Префаб иконки
+    [SerializeField] private GameObject iconSlot; 
 
-    private List<Image> activeIcons = new List<Image>(); // Список активных иконок
+    private List<Image> activeIcons = new List<Image>(); 
     void Start()
     {
         HideObject();
@@ -380,36 +380,78 @@ public class HudBar : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
         a_password.text = "";
     }
-    public void AddEffectIcon(EffectType effect)
+    public void AddEffectIcon(EffectType effect, float effectDuration)
+{
+
+    if (activeIcons.Count >= 11)
     {
-        Image icon = Instantiate(iconPrefab, effectsIconContainer).GetComponent<Image>();
-        switch (effect)
-        {
-            case EffectType.SpeedBoost:
-                icon.sprite = speedIcon.sprite;
-                break;
-            case EffectType.Freez:
-                icon.sprite = freezeIcon.sprite;
-                break;
-
-        }
-
-        activeIcons.Add(icon);
-        SortIcons();  // Сортируем иконки после добавления
+        return; 
     }
 
-    // Сортировка иконок по времени или типу эффекта
+        GameObject newIconObject = Instantiate(iconSlot, effectsIconContainer);
+        Image icon = newIconObject.GetComponent<Image>();
+
+        TextMeshProUGUI timeText = newIconObject.GetComponentInChildren<TextMeshProUGUI>();
+
+        float effectTimeLeft = effectDuration;
+
+        switch (effect)
+    {
+        case EffectType.SpeedBoost:
+            icon.sprite = speedIcon.sprite;
+            break;
+        case EffectType.Freez:
+            icon.sprite = freezeIcon.sprite;
+            break;
+        case EffectType.AdditionalHP:
+             icon.sprite = additionalHPIcon.sprite;
+             break;
+        case EffectType.HealBoost:
+             icon.sprite = healIcon.sprite;
+             break;
+        case EffectType.SmallDamage:
+             icon.sprite = smalldamageIcon.sprite;
+              break;
+        case EffectType.MediumDamage:
+              icon.sprite = mediumdamageIcon.sprite;
+              break;
+        case EffectType.HighDamage:
+              icon.sprite = highdamageIcon.sprite; 
+              break;
+        case EffectType.Ricochet:
+              icon.sprite = ricochetIcon.sprite;
+              break;
+        case EffectType.SpeedArmo:
+              icon.sprite = speedarmoIcon.sprite;
+              break;
+
+    }
+
+        activeIcons.Add(icon); 
+        SortIcons();
+        StartCoroutine(UpdateEffectTime(icon, timeText, effectDuration));
+    }
+
+    private IEnumerator UpdateEffectTime(Image icon, TextMeshProUGUI timeText, float effectTimeLeft)
+    {
+        while (effectTimeLeft > 0)
+        {
+            timeText.text = Mathf.Ceil(effectTimeLeft).ToString(); // Обновляем текст с оставшимся временем
+            yield return new WaitForSeconds(1f);
+            effectTimeLeft--;
+        }
+
+        RemoveEffectIcon(icon); // Удаляем иконку после истечения времени
+    }
+
     private void SortIcons()
     {
-        // В этом примере мы сортируем иконки по порядку их появления (по времени).
-        // Можно адаптировать под другие нужды.
         for (int i = 0; i < activeIcons.Count; i++)
         {
-            activeIcons[i].transform.SetSiblingIndex(i);  // Позиционируем иконки
+            activeIcons[i].transform.SetSiblingIndex(i); 
         }
     }
 
-    // Метод для удаления всех иконок
     public void ClearEffectIcons()
     {
         foreach (var icon in activeIcons)
@@ -417,6 +459,21 @@ public class HudBar : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             Destroy(icon.gameObject); 
         }
         activeIcons.Clear();  
+    }
+    public void RemoveEffectIcon(Image iconToRemove)
+    {
+        if (activeIcons.Contains(iconToRemove))
+        {
+            activeIcons.Remove(iconToRemove);
+            Destroy(iconToRemove.gameObject); 
+            SortIcons(); 
+        }
+    }
+
+    private IEnumerator RemoveEffectAfterDelay(Image icon, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        RemoveEffectIcon(icon);
     }
 
 }
