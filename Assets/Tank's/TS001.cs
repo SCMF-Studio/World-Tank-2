@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro.Examples;
 using UnityEngine;
+using static BoxEffect;
 
-public class TS001 : MonoBehaviour
+public class TS001 : MonoBehaviour, IEffectReceiver
 {
     public float hp = 100f; 
     public float maxHP = 100f; 
@@ -33,6 +34,8 @@ public class TS001 : MonoBehaviour
         originalSmallDamage,
         originalMediumDamage,
         originalHighDamage, originalDamage;
+    public bool IsEffectActive { get; private set; } = false;
+    private Dictionary<BoxEffect.EffectType, Coroutine> activeEffects = new Dictionary<BoxEffect.EffectType, Coroutine>();
 
 
     void Start()
@@ -375,7 +378,53 @@ public class TS001 : MonoBehaviour
         freezeEffectActive = false;
     }
 
+    public bool IsEffectActiveFor(BoxEffect.EffectType effectType)
+    {
+        return activeEffects.ContainsKey(effectType);
+    }
 
+    public void ActivateEffect(BoxEffect.EffectType effectType, float duration)
+    {
+        if (IsEffectActiveFor(effectType)) return;
 
+        Coroutine effectCoroutine = StartCoroutine(EffectCoroutine(effectType, duration));
+        activeEffects[effectType] = effectCoroutine;
+    }
+
+    private IEnumerator EffectCoroutine(BoxEffect.EffectType effectType, float duration)
+    {
+        switch (effectType)
+        {
+            case BoxEffect.EffectType.SpeedBoost:
+                ApplySpeedBoost(duration);
+                break;
+            case BoxEffect.EffectType.HealBoost:
+                ApplySpeedBoost(duration);
+                break;
+            case BoxEffect.EffectType.SmallDamage:
+                ApplySpeedBoost(duration);
+                break;
+            case BoxEffect.EffectType.MediumDamage:
+                ApplySpeedBoost(duration);
+                break;
+            case BoxEffect.EffectType.HighDamage:
+                ApplySpeedBoost(duration);
+                break;
+            case BoxEffect.EffectType.SpeedArmo:
+                ApplySpeedBoost(duration);
+                break;
+            case BoxEffect.EffectType.AdditionalHP:
+                ApplySpeedBoost(duration);
+                break;
+            case BoxEffect.EffectType.Freez:
+                ApplySpeedBoost(duration);
+                break;
+
+        }
+
+        yield return new WaitForSeconds(duration);
+
+        activeEffects.Remove(effectType);
+    }
 
 }

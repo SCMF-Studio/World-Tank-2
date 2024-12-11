@@ -25,6 +25,27 @@ public class BoxEffect : MonoBehaviour
         TA001 tankTA = other.GetComponent<TA001>();
         TL001 tankTL = other.GetComponent<TL001>();
 
+        if (tankTS != null && !tankTS.IsEffectActiveFor(effectType))
+        {
+            ApplyEffectToTank(tankTS);
+        }
+        else if (tankTH != null && !tankTH.IsEffectActiveFor(effectType))
+        {
+            ApplyEffectToTank(tankTH);
+        }
+        else if (tankTA != null && !tankTA.IsEffectActiveFor(effectType))
+        {
+            ApplyEffectToTank(tankTA);
+        }
+        else if (tankTL != null && !tankTL.IsEffectActiveFor(effectType))
+        {
+            ApplyEffectToTank(tankTL);
+        }
+        else
+        {
+            return;
+        }
+
         if (tankTS != null || tankTH != null || tankTA != null || tankTL != null)
         {
             
@@ -78,6 +99,20 @@ public class BoxEffect : MonoBehaviour
         }
 
     }
+
+    private void ApplyEffectToTank<T>(T tank) where T : MonoBehaviour, IEffectReceiver
+    {
+        tank.ActivateEffect(effectType, effectDuration);
+        hudBar.AddEffectIcon(effectType, effectDuration);
+        Destroy(gameObject);
+    }
+
+    public interface IEffectReceiver
+    {
+        bool IsEffectActive { get; }
+        void ActivateEffect(BoxEffect.EffectType effectType, float duration);
+    }
+
 
     private void ApplySpeedBoost(TS001 tankTS, TH001 tankTH, TA001 tankTA, TL001 tankTL)
     {

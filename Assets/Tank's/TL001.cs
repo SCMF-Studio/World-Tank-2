@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static BoxEffect;
 
-public class TL001 : MonoBehaviour
+public class TL001 : MonoBehaviour, IEffectReceiver
 {
     public float hp = 50f;
     public float maxHP = 50f;
@@ -30,9 +31,9 @@ public class TL001 : MonoBehaviour
        originalSmallDamage,
        originalMediumDamage,
        originalHighDamage;
+    public bool IsEffectActive { get; private set; } = false;
+    private Dictionary<BoxEffect.EffectType, Coroutine> activeEffects = new Dictionary<BoxEffect.EffectType, Coroutine>();
 
-    // Effect Hud
-    private Dictionary<BoxEffect.EffectType, float> activeEffects = new Dictionary<BoxEffect.EffectType, float>();
 
     void Start()
     {
@@ -235,44 +236,9 @@ public class TL001 : MonoBehaviour
     }
 
 
-    // Effect Hud
-    public bool IsEffectActive(BoxEffect.EffectType effectType)
-    {
-        if (activeEffects.ContainsKey(effectType))
-        {
-            return true; // Эффект уже активен
-        }
-        return false;
-    }
-
-    public void ActivateEffect(BoxEffect.EffectType effectType, float duration)
-    {
-        if (activeEffects.ContainsKey(effectType))
-        {
-            activeEffects[effectType] = duration;
-        }
-        else
-        {
-            activeEffects.Add(effectType, duration);
-        }
-
-        StartCoroutine(DeactivateEffectAfterDuration(effectType, duration));
-    }
-
-    private IEnumerator DeactivateEffectAfterDuration(BoxEffect.EffectType effectType, float duration)
-    {
-        yield return new WaitForSeconds(duration);
-        if (activeEffects.ContainsKey(effectType))
-        {
-            activeEffects.Remove(effectType);
-        }
-    }
-
     // Boost System
     public void ApplySpeedBoost(float duration)
     {
-        if (IsEffectActive(BoxEffect.EffectType.SpeedBoost)) return;
-        ActivateEffect(BoxEffect.EffectType.SpeedBoost, duration);
         StopCoroutine("SpeedBoostCoroutine");
         StartCoroutine(SpeedBoostCoroutine(duration));
     }
@@ -294,8 +260,6 @@ public class TL001 : MonoBehaviour
 
     public void ApplySmallDamageBoost(float duration)
     {
-        if (IsEffectActive(BoxEffect.EffectType.SmallDamage)) return;
-        ActivateEffect(BoxEffect.EffectType.SmallDamage, duration);
         StopCoroutine("SmallDamageBoostCoroutine");
         StartCoroutine(SmallDamageBoostCoroutine(duration));
     }
@@ -309,8 +273,6 @@ public class TL001 : MonoBehaviour
 
     public void ApplyMediumDamageBoost(float duration)
     {
-        if (IsEffectActive(BoxEffect.EffectType.MediumDamage)) return;
-        ActivateEffect(BoxEffect.EffectType.MediumDamage, duration);
         StopCoroutine("MediumDamageBoostCoroutine");
         StartCoroutine(MediumDamageBoostCoroutine(duration));
     }
@@ -324,8 +286,6 @@ public class TL001 : MonoBehaviour
 
     public void ApplyHighDamageBoost(float duration)
     {
-        if (IsEffectActive(BoxEffect.EffectType.HighDamage)) return;
-        ActivateEffect(BoxEffect.EffectType.HighDamage, duration);
         StopCoroutine("HighDamageBoostCoroutine");
         StartCoroutine(HighDamageBoostCoroutine(duration));
     }
@@ -339,8 +299,6 @@ public class TL001 : MonoBehaviour
 
     public void ApplySpeedArmoBoost(float duration)
     {
-        if (IsEffectActive(BoxEffect.EffectType.SpeedArmo)) return;
-        ActivateEffect(BoxEffect.EffectType.SpeedArmo, duration);
         StopCoroutine("SpeedArmoBoostCoroutine");
         StartCoroutine(SpeedArmoBoostCoroutine(duration));
     }
@@ -370,8 +328,6 @@ public class TL001 : MonoBehaviour
 
     public void ApplyAdditionalHPBoost(float duration)
     {
-        if (IsEffectActive(BoxEffect.EffectType.AdditionalHP)) return;
-        ActivateEffect(BoxEffect.EffectType.AdditionalHP, duration);
         StopCoroutine("AdditionalHPBoostCoroutine");
         StartCoroutine(AdditionalHPBoostCoroutine(duration));
     }
@@ -400,8 +356,6 @@ public class TL001 : MonoBehaviour
 
     public void ActivateFreezeEffect(float duration)
     {
-        if (IsEffectActive(BoxEffect.EffectType.Freez)) return;
-        ActivateEffect(BoxEffect.EffectType.Freez, duration);
         freezeEffectActive = true;
         StartCoroutine(FreezeEffectCoroutine(duration));
     }
@@ -410,5 +364,54 @@ public class TL001 : MonoBehaviour
     {
         yield return new WaitForSeconds(duration);
         freezeEffectActive = false;
+    }
+
+    public bool IsEffectActiveFor(BoxEffect.EffectType effectType)
+    {
+        return activeEffects.ContainsKey(effectType);
+    }
+
+    public void ActivateEffect(BoxEffect.EffectType effectType, float duration)
+    {
+        if (IsEffectActiveFor(effectType)) return;
+
+        Coroutine effectCoroutine = StartCoroutine(EffectCoroutine(effectType, duration));
+        activeEffects[effectType] = effectCoroutine;
+    }
+
+    private IEnumerator EffectCoroutine(BoxEffect.EffectType effectType, float duration)
+    {
+        switch (effectType)
+        {
+            case BoxEffect.EffectType.SpeedBoost:
+                ApplySpeedBoost(duration);
+                break;
+            case BoxEffect.EffectType.HealBoost:
+                ApplySpeedBoost(duration);
+                break;
+            case BoxEffect.EffectType.SmallDamage:
+                ApplySpeedBoost(duration);
+                break;
+            case BoxEffect.EffectType.MediumDamage:
+                ApplySpeedBoost(duration);
+                break;
+            case BoxEffect.EffectType.HighDamage:
+                ApplySpeedBoost(duration);
+                break;
+            case BoxEffect.EffectType.SpeedArmo:
+                ApplySpeedBoost(duration);
+                break;
+            case BoxEffect.EffectType.AdditionalHP:
+                ApplySpeedBoost(duration);
+                break;
+            case BoxEffect.EffectType.Freez:
+                ApplySpeedBoost(duration);
+                break;
+
+        }
+
+        yield return new WaitForSeconds(duration);
+
+        activeEffects.Remove(effectType);
     }
 }
