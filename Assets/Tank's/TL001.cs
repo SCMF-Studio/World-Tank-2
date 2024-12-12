@@ -104,6 +104,20 @@ public class TL001 : MonoBehaviour, IEffectReceiver
         transform.Rotate(Vector3.forward, MoveHorizontalInput * turnSpeed * Time.deltaTime);
     }
 
+    void RotateTurret()
+    {
+        float rotationInput = 0f;
+        if (Input.GetMouseButton(0))
+        {
+            rotationInput = 1f;
+        }
+        else if (Input.GetMouseButton(1))
+        {
+            rotationInput = -1f;
+        }
+
+        muzzleTransform.Rotate(Vector3.forward, rotationInput * rotationSpeed * Time.deltaTime);
+    }
     public void TakeDamage(float damageAmount)
     {
         currentHP -= damageAmount;
@@ -160,20 +174,6 @@ public class TL001 : MonoBehaviour, IEffectReceiver
         }
     }
 
-    void RotateTurret()
-    {
-        float rotationInput = 0f;
-        if (Input.GetMouseButton(0))
-        {
-            rotationInput = 1f;
-        }
-        else if (Input.GetMouseButton(1))
-        {
-            rotationInput = -1f;
-        }
-
-        muzzleTransform.Rotate(Vector3.forward, rotationInput * rotationSpeed * Time.deltaTime);
-    }
 
     private IEnumerator Shoot()
     {
@@ -387,25 +387,25 @@ public class TL001 : MonoBehaviour, IEffectReceiver
                 ApplySpeedBoost(duration);
                 break;
             case BoxEffect.EffectType.HealBoost:
-                ApplySpeedBoost(duration);
+                ApplyHealBoost();
                 break;
             case BoxEffect.EffectType.SmallDamage:
-                ApplySpeedBoost(duration);
+                ApplySmallDamageBoost(duration);
                 break;
             case BoxEffect.EffectType.MediumDamage:
-                ApplySpeedBoost(duration);
+                ApplyMediumDamageBoost(duration);
                 break;
             case BoxEffect.EffectType.HighDamage:
-                ApplySpeedBoost(duration);
+                ApplyHighDamageBoost(duration);
                 break;
             case BoxEffect.EffectType.SpeedArmo:
-                ApplySpeedBoost(duration);
+                ApplySpeedArmoBoost(duration);
                 break;
             case BoxEffect.EffectType.AdditionalHP:
-                ApplySpeedBoost(duration);
+                ApplyAdditionalHPBoost(duration);
                 break;
             case BoxEffect.EffectType.Freez:
-                ApplySpeedBoost(duration);
+                ActivateFreezeEffect(duration);
                 break;
 
         }

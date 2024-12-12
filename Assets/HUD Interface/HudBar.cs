@@ -381,67 +381,66 @@ public class HudBar : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         a_password.text = "";
     }
     public void AddEffectIcon(EffectType effect, float effectDuration)
-{
-
-    if (activeIcons.Count >= 11)
     {
-        return; 
-    }
+        if (activeIcons.Any(icon => icon.sprite == GetEffectSprite(effect)))
+        {
+            Debug.Log($"Иконка эффекта {effect} уже отображается.");
+            return;
+        }
+
+        if (activeIcons.Count >= 11)
+        {
+            return;
+        }
 
         GameObject newIconObject = Instantiate(iconSlot, effectsIconContainer);
         Image icon = newIconObject.GetComponent<Image>();
-
         TextMeshProUGUI timeText = newIconObject.GetComponentInChildren<TextMeshProUGUI>();
 
-        float effectTimeLeft = effectDuration;
-
-        switch (effect)
-    {
-        case EffectType.SpeedBoost:
-            icon.sprite = speedIcon.sprite;
-            break;
-        case EffectType.Freez:
-            icon.sprite = freezeIcon.sprite;
-            break;
-        case EffectType.AdditionalHP:
-             icon.sprite = additionalHPIcon.sprite;
-             break;
-        case EffectType.HealBoost:
-             icon.sprite = healIcon.sprite;
-             break;
-        case EffectType.SmallDamage:
-             icon.sprite = smalldamageIcon.sprite;
-              break;
-        case EffectType.MediumDamage:
-              icon.sprite = mediumdamageIcon.sprite;
-              break;
-        case EffectType.HighDamage:
-              icon.sprite = highdamageIcon.sprite; 
-              break;
-        case EffectType.Ricochet:
-              icon.sprite = ricochetIcon.sprite;
-              break;
-        case EffectType.SpeedArmo:
-              icon.sprite = speedarmoIcon.sprite;
-              break;
-
-    }
-
-        activeIcons.Add(icon); 
+        icon.sprite = GetEffectSprite(effect);
+        activeIcons.Add(icon);
         SortIcons();
         StartCoroutine(UpdateEffectTime(icon, timeText, effectDuration));
     }
+
+    private Sprite GetEffectSprite(EffectType effect)
+    {
+        switch (effect)
+        {
+            case EffectType.SpeedBoost:
+                return speedIcon.sprite;
+            case EffectType.Freez:
+                return freezeIcon.sprite;
+            case EffectType.AdditionalHP:
+                return additionalHPIcon.sprite;
+            case EffectType.HealBoost:
+                return healIcon.sprite;
+            case EffectType.SmallDamage:
+                return smalldamageIcon.sprite;
+            case EffectType.MediumDamage:
+                return mediumdamageIcon.sprite;
+            case EffectType.HighDamage:
+                return highdamageIcon.sprite;
+            case EffectType.Ricochet:
+                return ricochetIcon.sprite;
+            case EffectType.SpeedArmo:
+                return speedarmoIcon.sprite;
+            default:
+                return null;
+        }
+    }
+
 
     private IEnumerator UpdateEffectTime(Image icon, TextMeshProUGUI timeText, float effectTimeLeft)
     {
         while (effectTimeLeft > 0)
         {
-            timeText.text = Mathf.Ceil(effectTimeLeft).ToString(); // Обновляем текст с оставшимся временем
+            timeText.text = Mathf.Ceil(effectTimeLeft).ToString(); 
             yield return new WaitForSeconds(1f);
             effectTimeLeft--;
         }
 
-        RemoveEffectIcon(icon); // Удаляем иконку после истечения времени
+        RemoveEffectIcon(icon); 
     }
 
     private void SortIcons()
