@@ -187,6 +187,14 @@ public class ManagerGame : MonoBehaviour
         }
     }
 
+    public void OnTankDeath()
+    {
+        choise.SetActive(true); 
+        hud.SetActive(false);   
+        isTankSelected = false; 
+        spawnedTank = null;     
+        info.text = "Your choice: No tank selected";
+    }
 
 
 

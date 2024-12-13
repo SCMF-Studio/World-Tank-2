@@ -141,7 +141,7 @@ public class TH001 : MonoBehaviour, IEffectReceiver
 
     private void Die()
     {
-        Debug.Log("Танк уничтожен!");
+        FindObjectOfType<ManagerGame>().OnTankDeath();
         Destroy(gameObject);
     }
 

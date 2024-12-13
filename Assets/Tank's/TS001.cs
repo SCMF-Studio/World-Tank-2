@@ -47,6 +47,7 @@ public class TS001 : MonoBehaviour, IEffectReceiver
         currentHP = maxHP;
 
 
+
         // Boost System
         originalSpeed = speed;
         originalHeal = hp;
@@ -151,7 +152,7 @@ public class TS001 : MonoBehaviour, IEffectReceiver
 
     private void Die()
     {
-        Debug.Log("Танк уничтожен!");
+        FindObjectOfType<ManagerGame>().OnTankDeath();
         Destroy(gameObject); 
     }
 
