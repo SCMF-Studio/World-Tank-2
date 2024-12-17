@@ -110,7 +110,43 @@ public class AdminConsole : MonoBehaviour
 
     }
 
-    
+
+    public void KillTank()
+    {
+        if (player != null)
+        {
+            TS001 ts001 = player.GetComponent<TS001>();
+            if (ts001 != null)
+            {
+                ts001.TakeDamage(ts001.maxHP); 
+                return;
+            }
+
+            TH001 th001 = player.GetComponent<TH001>();
+            if (th001 != null)
+            {
+                th001.TakeDamage(th001.maxHP);
+                return;
+            }
+
+            TA001 ta001 = player.GetComponent<TA001>();
+            if (ta001 != null)
+            {
+                ta001.TakeDamage(ta001.maxHP);
+                return;
+            }
+
+            TL001 tl001 = player.GetComponent<TL001>();
+            if (tl001 != null)
+            {
+                tl001.TakeDamage(tl001.maxHP);
+                return;
+            }
+            return;
+        }
+        return;
+    }
+
     // Reload Setting
     public void OnReloadChange(string inputText)
     {

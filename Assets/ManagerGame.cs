@@ -3,6 +3,7 @@ using TMPro;
 using static UnityEditor.Experimental.GraphView.GraphView;
 using System.Runtime.CompilerServices;
 using System.Collections;
+using System.Collections.Generic;
 
 public class ManagerGame : MonoBehaviour
 {
@@ -25,6 +26,12 @@ public class ManagerGame : MonoBehaviour
 
     [SerializeField] private HudBar hudBar;
 
+    // Respawn
+    private Dictionary<string, float> tankCooldowns = new Dictionary<string, float>();
+    private float cooldownDuration = 60f;
+    [SerializeField] private TextMeshProUGUI cooldownText_TS, cooldownText_TH, cooldownText_TA, cooldownText_TL;
+
+
 
     void Start()
     {
@@ -43,6 +50,15 @@ public class ManagerGame : MonoBehaviour
         pos = value;
         Debug.Log(value);
     }
+    void Update()
+    {
+
+        UpdateCooldownText("TS-0001", cooldownText_TS);
+        UpdateCooldownText("TH-0001", cooldownText_TH);
+        UpdateCooldownText("TA-0001", cooldownText_TA);
+        UpdateCooldownText("TL-0001", cooldownText_TL);
+    }
+
     public void SetTarget(Transform target)
     {
         if (target != null)
@@ -69,9 +85,17 @@ public class ManagerGame : MonoBehaviour
             info.text = "Your choice: No tank selected";
         }
     }
-
-    private void SelectTank(string choiceText, GameObject tankPrefab)
+    private string currentTankName;
+    private void SelectTank(string choiceText, GameObject tankPrefab, string tankName)
     {
+        if (!IsTankAvailable(tankName))
+        {
+            float timeLeft = GetTankCooldownTimeLeft(tankName);
+            info.text = $"Tank {tankName} is on cooldown. Time left: {timeLeft:F1} seconds.";
+            return;
+        }
+
+        // Если танк доступен
         info.text = choiceText;
         isTankSelected = true;
 
@@ -81,36 +105,64 @@ public class ManagerGame : MonoBehaviour
         }
 
         spawnedTank = Instantiate(tankPrefab);
-        Possition(spawnedTank);  // Перемещаем танк в правильное место
-
-        cameraController.SetTarget(spawnedTank.transform);  // Устанавливаем новый таргет для камеры
+        Possition(spawnedTank);
+        spawnedTank.name = tankName;
+        cameraController.SetTarget(spawnedTank.transform);
 
         selectedTank = tankPrefab;
+        currentTankName = tankName; // Сохраняем имя текущего танка
 
         float reloadTime = GetReloadTime(spawnedTank);
         hudBar.SetReloadTime(reloadTime);
 
         if (spawnedTank.TryGetComponent<TS001>(out TS001 ts001))
-        {
             ts001.OnReloadStarted += (reloadTime) => hudBar.StartReload();
-        }
-
         if (spawnedTank.TryGetComponent<TH001>(out TH001 th001))
-        {
             th001.OnReloadStarted += (reloadTime) => hudBar.StartReload();
-        }
-
         if (spawnedTank.TryGetComponent<TA001>(out TA001 ta001))
-        {
             ta001.OnReloadStarted += (reloadTime) => hudBar.StartReload();
-        }
-
         if (spawnedTank.TryGetComponent<TL001>(out TL001 tl001))
-        {
             tl001.OnReloadStarted += (reloadTime) => hudBar.StartReload();
-        }
     }
 
+
+
+    private bool IsTankAvailable(string tankName)
+    {
+        if (tankCooldowns.TryGetValue(tankName, out float cooldownEndTime))
+        {
+            return Time.time >= cooldownEndTime; 
+        }
+        return true; 
+    }
+
+
+    private void SetTankCooldown(string tankName)
+    {
+        tankCooldowns[tankName] = Time.time + cooldownDuration; 
+    }
+
+    private float GetTankCooldownTimeLeft(string tankName)
+    {
+        if (tankCooldowns.TryGetValue(tankName, out float cooldownEndTime))
+        {
+            return Mathf.Max(0, cooldownEndTime - Time.time);
+        }
+        return 0f; 
+    }
+    private void UpdateCooldownText(string tankName, TextMeshProUGUI textObject)
+    {
+        float timeLeft = GetTankCooldownTimeLeft(tankName);
+
+        if (timeLeft > 0)
+        {
+            textObject.text = $"Cooldown: {timeLeft:F1}s";
+        }
+        else
+        {
+            textObject.text = "Available";
+        }
+    }
     private float GetReloadTime(GameObject tank)
     {
 
@@ -136,22 +188,22 @@ public class ManagerGame : MonoBehaviour
 
     public void TankStandart0001()
     {
-        SelectTank("Your choice: TS-0001", tank_ts0001);
+        SelectTank("Your choice: TS-0001", tank_ts0001, "TS-0001");
     }
 
     public void TankHuge0001()
     {
-        SelectTank("Your choice: TH-0001", tank_th0001);
+        SelectTank("Your choice: TH-0001", tank_th0001, "TH-0001");
     }
 
     public void TankAverage0001()
     {
-        SelectTank("Your choice: TA-0001", tank_ta0001);
+        SelectTank("Your choice: TA-0001", tank_ta0001, "TA-0001");
     }
 
     public void TankLittle0001()
     {
-        SelectTank("Your choice: TL-0001", tank_tl0001);
+        SelectTank("Your choice: TL-0001", tank_tl0001, "TL-0001");
     }
 
     public GameObject GetSpawnedTank()
@@ -189,12 +241,20 @@ public class ManagerGame : MonoBehaviour
 
     public void OnTankDeath()
     {
-        choise.SetActive(true); 
-        hud.SetActive(false);   
-        isTankSelected = false; 
-        spawnedTank = null;     
+        if (!string.IsNullOrEmpty(currentTankName))
+        {
+            SetTankCooldown(currentTankName); 
+        }
+
+        choise.SetActive(true);
+        hud.SetActive(false);
+        isTankSelected = false;
+        spawnedTank = null;
         info.text = "Your choice: No tank selected";
+
+        currentTankName = null; 
     }
+
 
 
 
